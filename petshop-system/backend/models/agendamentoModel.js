@@ -1,1 +1,0 @@
-// Modelo opcional, lógica direto no controller

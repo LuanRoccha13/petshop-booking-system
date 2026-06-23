@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: petshop-db
+    environment:
+      POSTGRES_USER: petshop
+      POSTGRES_PASSWORD: petshop
+      POSTGRES_DB: petshop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U petshop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: petshop-backend
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: postgres
+      DB_NAME: petshop
+      DB_USERNAME: petshop
+      DB_PASSWORD: petshop
+      JWT_SECRET: Da3Nk5Qp8Rz2Xc7Vt1Yh4Lb9Fp0Sa6Ge
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
