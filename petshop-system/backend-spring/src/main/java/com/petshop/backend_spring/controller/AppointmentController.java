@@ -7,9 +7,11 @@ import com.petshop.backend_spring.mapper.AppointmentMapper;
 import com.petshop.backend_spring.service.AppointmentService;
 import com.petshop.backend_spring.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,11 +29,12 @@ public class AppointmentController {
         this.appointmentMapper = appointmentMapper;
     }
 
-    @PostMapping
-    public ResponseEntity<AppointmentResponse> createAppointment(@Valid @RequestBody AppointmentRequest request,
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AppointmentResponse> createAppointment(@Valid @RequestPart("appointment") AppointmentRequest request,
+                                                                  @RequestPart("image") MultipartFile image,
                                                                   Authentication authentication) {
         User user = userService.findByEmail(authentication.getName());
-        var appointment = appointmentService.createAppointment(request, user);
+        var appointment = appointmentService.createAppointment(request, user, image);
         AppointmentResponse response = appointmentMapper.toResponse(appointment);
         return ResponseEntity.status(201).body(response);
     }

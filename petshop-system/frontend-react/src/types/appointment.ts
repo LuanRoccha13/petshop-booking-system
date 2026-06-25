@@ -14,5 +14,5 @@ export interface AppointmentCreate {
   date: string;
   time: string;
   notes?: string;
-  imageUrl?: string;
+  imageFile: File | null;
 }

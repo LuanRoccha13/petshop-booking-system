@@ -24,6 +24,7 @@ export function validateAppointmentForm(form: {
   breed?: string;
   date?: string;
   time?: string;
+  imageFile?: File | null;
 }): Record<string, string> {
   const errors: Record<string, string> = {};
 
@@ -48,6 +49,14 @@ export function validateAppointmentForm(form: {
 
   if (!form.time) {
     errors.time = 'Horário é obrigatório';
+  }
+
+  if (!form.imageFile) {
+    errors.imageFile = 'Imagem do pet é obrigatória';
+  } else if (!form.imageFile.type.startsWith('image/')) {
+    errors.imageFile = 'Envie um arquivo de imagem válido';
+  } else if (form.imageFile.size > 5 * 1024 * 1024) {
+    errors.imageFile = 'A imagem deve ter no máximo 5 MB';
   }
 
   return errors;

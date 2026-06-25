@@ -5,12 +5,14 @@ import com.petshop.backend_spring.domain.RefreshToken;
 import com.petshop.backend_spring.domain.User;
 import com.petshop.backend_spring.repository.RefreshTokenRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
