@@ -1,152 +1,241 @@
-# Sistema de Agendamento de Banhos em Pet Shop 🐶
+# Petshop Booking System
 
-Este projeto é um sistema web completo para agendamento de banhos em pets, feito como atividade individual. Ele possui funcionalidades de cadastro e login com autenticação segura, agendamentos com upload de imagem, dashboard com estatísticas, entre outros recursos extras.
+A web system for managing pet bathing appointments, featuring JWT authentication, pet image upload, a customer dashboard, and Swagger-documented APIs.
 
-## 🔧 Tecnologias Utilizadas
+## Overview
 
-### Front-end:
-- HTML5
-- CSS3
-- JavaScript (Chart.js para gráficos)
+The project is organized into two main modules:
 
-### Back-end:
-- Node.js
-- Express.js
+- `backend-spring`: REST API built with Spring Boot, Spring Security, JPA, and PostgreSQL.
+- `frontend-react`: React + TypeScript + Vite SPA with registration, login, and dashboard flows.
 
-### Banco de Dados:
-- MySQL
-- MySQL Workbench
+## Architecture
 
-### Autenticação e Segurança:
-- JWT (JSON Web Token)
-- Bcrypt
+### Backend (Spring Boot)
 
-### Upload de Imagens:
-- Multer
+- Java 21
+- Spring Boot 4
+- Spring Security with JWT (access token + refresh token)
+- Spring Data JPA
+- PostgreSQL
+- Swagger OpenAPI
+- Image upload via `multipart/form-data`
+- Images stored on disk (only path/URL saved in the database)
 
-## 🚀 Como Executar o Projeto
+### Frontend (React)
 
-### Pré-requisitos:
-- Node.js
-- MySQL
-- MySQL Workbench
+- React 18
+- TypeScript
+- Vite
+- React Router
+- Axios
+- Tailwind CSS
 
-### 1. Clone o repositório
-```bash
-git clone https://github.com/seu-usuario/sistema-agendamento-petshop.git
-cd sistema-agendamento-petshop
+## Features
+
+- User registration
+- Login with access token + refresh token issuance
+- Session renewal via refresh token
+- Logout with refresh token invalidation
+- Appointment creation with:
+  - pet name
+  - breed
+  - date
+  - time
+  - notes
+  - image upload
+- Authenticated user appointment listing
+- Appointment cancellation
+- Public landing page + full flow to dashboard
+
+## Folder structure
+
+```text
+petshop-booking-system/
+├── README.md
+└── petshop-system/
+    ├── backend-spring/
+    └── frontend-react/
 ```
 
-### 2. Instale as dependências
+## Requirements
+
+- Node.js 18+
+- npm 9+
+- Java 21
+- Maven (or use `mvnw`)
+- Docker and Docker Compose (optional, recommended for DB and backend)
+
+## Running the project (recommended mode)
+
+### 1. Start backend + database with Docker
+
+In `petshop-system/backend-spring`:
+
+```bash
+docker-compose up -d
+```
+
+Services:
+
+- API: `http://localhost:8080`
+- PostgreSQL: `localhost:5432` (db `petshop`)
+
+### 2. Run the React frontend
+
+In `petshop-system/frontend-react`:
+
 ```bash
 npm install
+npm run dev
 ```
 
-### 3. Configure o arquivo `.env`
-Crie um arquivo `.env` na raiz do projeto com os seguintes dados:
-```env
-PORT=3000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=sua_senha
-DB_NAME=petshop
-JWT_SECRET=umasecretaforte
-```
+Frontend:
 
-### 4. Importe o banco de dados
-Importe o arquivo `banco_petshop.sql` no MySQL Workbench para criar a estrutura e tabelas necessárias.
+- App: `http://localhost:5173`
 
-### 5. Inicie o servidor
+## Running locally (backend outside container)
+
+### Docker database + local backend
+
+In `petshop-system/backend-spring`:
+
 ```bash
-npm start
+docker-compose up -d postgres
+./mvnw spring-boot:run
 ```
 
-### 6. Acesse o sistema
-Abra o navegador em: `http://localhost:3000`
+On Windows (PowerShell):
 
-## 📂 Estrutura do Projeto
-```
-petshop-agendamentos/
-│
-├── README.md
-├── .gitignore
-└── petshop-system/
-    │
-    ├── back-end/
-    │   ├── controllers/
-    │   │   └── agendamentoController.js
-    │   │   └── authController.js
-    │   │
-    │   ├── middlewares/
-    │   │   └── authMiddleware.js
-    │   │
-    │   ├── models/
-    │   │   └── conexao.js
-    │   │   └── agendamentoModel.js
-    │   │   └── usuarioModel.js
-    │   │
-    │   ├── routes/
-    │   │   └── agendamentoRoutes.js
-    │   │   └── authRoutes.js
-    │   │
-    │   ├── uploads/
-    │   │   └── [aqui ficam as imagens enviadas]
-    │   │
-    │   ├── .env
-    │   ├── app.js
-    │   ├── package.json
-    │   └── banco_petshop.sql
-    │
-    └── front-end/
-       ├── css/
-       │   └── style.css
-       │
-       ├── js/
-       │   └── script.js
-       │   └── login.js
-       │   └── dashboard.js
-       │
-       ├── imagens/
-       │   └── [aqui você pode salvar imagens estáticas do site]
-       │
-       ├── index.html
-       ├── login.html
-       ├── dashboard.html
-       └── agendamento.html
-    
-    
-
+```powershell
+docker-compose up -d postgres
+.\mvnw.cmd spring-boot:run
 ```
 
-## ✅ Funcionalidades Principais
-- Cadastro e login de usuários com criptografia
-- Validação de senha e autenticação JWT
-- Agendamento de banhos com:
-  - Nome do pet
-  - Raça
-  - Data
-  - Horário
-  - Observações
-  - Imagem
-- CRUD completo de agendamentos
-- Upload de imagem com visualização (preview)
-- Dashboard com:
-  - Total de agendamentos
-  - Gráfico de raças
+Then run the frontend normally in `petshop-system/frontend-react`:
 
-## ⭐ Funcionalidades Extras (Ponto adicional)
-- Mostrar e esconder senha
-- Restrições como horário duplicado não permitido
-- Preview da imagem antes do upload
-- Dashboard com estatísticas visuais
+```bash
+npm install
+npm run dev
+```
 
-## 📦 Exportação do Banco
-O arquivo `banco_petshop.sql` está incluído no projeto com a estrutura completa do banco de dados.
+## Environment variables
 
----
+### Frontend
 
-Se tiver qualquer dúvida, entre em contato ou abra uma issue no repositório. 🐾
+File: `petshop-system/frontend-react/.env.local`
 
----
-**Desenvolvido por Luan Rocha da Silva - 2025**
+```env
+VITE_API_URL=http://localhost:8080
+```
+
+### Backend
+
+Configured in `application.properties` with defaults. Main variables:
+
+```env
+DB_HOST=localhost
+DB_NAME=petshop
+DB_USERNAME=petshop
+DB_PASSWORD=petshop
+
+JWT_SECRET=<your-secret>
+JWT_EXPIRATION_MS=86400000
+JWT_REFRESH_EXPIRATION_MS=2592000000
+
+APP_UPLOAD_DIR=uploads
+```
+
+## Main endpoints
+
+### Authentication
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
+
+### User
+
+- `GET /api/user/me`
+
+### Appointments
+
+- `POST /api/appointments` (multipart with `appointment` and `image` parts)
+- `GET /api/appointments`
+- `DELETE /api/appointments/{id}`
+
+### API docs
+
+- `GET /swagger-ui.html`
+
+## Appointment creation example (multipart)
+
+```bash
+curl -X POST http://localhost:8080/api/appointments \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -F 'appointment={"petName":"Luna","breed":"Shih Tzu","date":"2026-07-15","time":"14:30:00","notes":"Bath and hydration"};type=application/json' \
+  -F "image=@/path/to/photo.jpg"
+```
+
+## Production build
+
+### Frontend
+
+In `petshop-system/frontend-react`:
+
+```bash
+npm run build
+npm run preview
+```
+
+### Backend
+
+In `petshop-system/backend-spring`:
+
+```bash
+./mvnw clean package
+```
+
+On Windows (PowerShell):
+
+```powershell
+.\mvnw.cmd clean package
+```
+
+## Troubleshooting
+
+### Image not showing on dashboard
+
+- Ensure `VITE_API_URL` points to the correct backend URL.
+- Ensure `/uploads/**` is accessible.
+- Confirm the file was saved to the directory configured by `APP_UPLOAD_DIR`.
+
+### CORS error in frontend
+
+- Ensure frontend runs on `http://localhost:5173` (or another allowed origin).
+- Review allowed origins in `SecurityConfig`.
+
+### 401 on authenticated routes
+
+- Ensure `Authorization: Bearer <token>` is being sent.
+- If token expired, call `POST /api/auth/refresh`.
+
+### Port 5432 already in use
+
+```bash
+docker-compose down
+docker-compose up -d
+```
+
+## Suggested roadmap
+
+- Integrate external image storage (S3/Cloudinary) for production
+- Add end-to-end automated tests (auth + appointments)
+- Improve observability (structured logs and metrics)
+- Full deployment setup (frontend + backend + database)
+
+## License
+
+See `LICENSE`.
 
