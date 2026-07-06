@@ -27,6 +27,31 @@
   --color-danger-soft: #fae8e7;
   --color-info: #1d6fd1;
 
+  /* Camada de neutros para seções escuras (evita hex hardcoded espalhado pelo app) */
+  --color-dark-bg: #18130f;
+  --color-dark-surface: #211a14;
+  --color-dark-text: #f8f2ea;
+  --color-dark-text-muted: rgba(248, 242, 234, 0.74);
+  --color-dark-text-subtle: rgba(248, 242, 234, 0.52);
+  --color-dark-border: rgba(255, 255, 255, 0.1);
+  --color-dark-surface-hover: rgba(255, 255, 255, 0.06);
+
+  /* Escala de profundidade para empilhamento consciente (header, painéis, tooltips, modais) */
+  --z-base: 1;
+  --z-decor: 2;
+  --z-sticky: 10;
+  --z-header: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+
+  /* Tracking (letter-spacing) para diferentes escalas tipográficas */
+  --tracking-tight: -0.02em;
+  --tracking-tighter: -0.03em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.12em;
+
   --gradient-hero: linear-gradient(180deg, #f8f2ea 0%, #f3e9dd 55%, #eedfce 100%);
   --gradient-cta: linear-gradient(135deg, #eb6a2c 0%, #ff8a54 100%);
   --gradient-card-highlight: linear-gradient(180deg, #fffdfa 0%, #f8efe4 100%);
@@ -75,6 +100,8 @@
   --shadow-sm: 0 8px 24px rgba(33, 24, 17, 0.06);
   --shadow-md: 0 18px 42px rgba(33, 24, 17, 0.1);
   --shadow-lg: 0 28px 70px rgba(33, 24, 17, 0.14);
+  --shadow-xl: 0 40px 100px rgba(33, 24, 17, 0.18);
+  --shadow-inset: inset 0 1px 2px rgba(33, 24, 17, 0.06);
   --shadow-focus: 0 0 0 4px rgba(235, 106, 44, 0.18);
 
   --border-subtle: 1px solid rgba(64, 43, 21, 0.1);
@@ -209,6 +236,25 @@
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+/* Textura sutil de grain/noise — aplicar sobre fundos escuros ou de destaque para
+   quebrar a "chapada" de cor sólida e dar sensação de acabamento fotográfico/premium. */
+.texture-grain {
+  position: relative;
+  isolation: isolate;
+}
+
+.texture-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-decor);
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 120px 120px;
 }
 
 .reveal {

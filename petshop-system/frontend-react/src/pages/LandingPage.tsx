@@ -7,7 +7,7 @@ import serviceImageOne from '../assets/images/mais-imagens-pet-shop/pexels-gooch
 import serviceImageTwo from '../assets/images/mais-imagens-pet-shop/pexels-gustavo-fring-6816860.jpg';
 import serviceImageThree from '../assets/images/mais-imagens-pet-shop/buddy-an-LpK2xddrElI-unsplash.jpg';
 
-function useReveal<T extends HTMLElement>() {
+function useReveal<T extends HTMLElement>(staggerMs = 90) {
   const ref = useRef<T>(null);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function useReveal<T extends HTMLElement>() {
           if (!entry.isIntersecting) return;
           entry.target.classList.add('is-visible');
           entry.target.querySelectorAll<HTMLElement>('.reveal-child').forEach((child, index) => {
-            window.setTimeout(() => child.classList.add('is-visible'), index * 90);
+            window.setTimeout(() => child.classList.add('is-visible'), index * staggerMs);
           });
         });
       },
@@ -29,7 +29,7 @@ function useReveal<T extends HTMLElement>() {
 
     observer.observe(element);
     return () => observer.disconnect();
-  }, []);
+  }, [staggerMs]);
 
   return ref;
 }
@@ -59,6 +59,38 @@ function useScrollState() {
   }, []);
 
   return isScrolled;
+}
+
+/** Parallax leve e barato: a imagem do hero se move mais devagar que o scroll,
+ * criando profundidade sem depender de libs pesadas. Desativado em reduced-motion. */
+function useParallax<T extends HTMLElement>(strength = 0.12, disabled = false) {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    if (disabled) return;
+    const element = ref.current;
+    if (!element) return;
+
+    let ticking = false;
+    const update = () => {
+      const rect = element.getBoundingClientRect();
+      const offset = rect.top * strength;
+      // scale(1.12) garante que não apareçam bordas vazias enquanto a imagem desliza no parallax.
+      element.style.transform = `translate3d(0, ${offset.toFixed(2)}px, 0) scale(1.12)`;
+      ticking = false;
+    };
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [strength, disabled]);
+
+  return ref;
 }
 
 const navLinks = [
@@ -127,10 +159,15 @@ export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const heroRef = useReveal<HTMLElement>();
-  const quoteRef = useReveal<HTMLElement>();
-  const faqRef = useReveal<HTMLElement>();
-  const ctaRef = useReveal<HTMLElement>();
+  // Timing coreografado: cada seção tem uma personalidade de entrada diferente
+  // (hero mais rápido e ágil; citação mais lenta e dramática; FAQ ágil; CTA um fechamento cadenciado).
+  const heroRef = useReveal<HTMLElement>(70);
+  const servicesRef = useReveal<HTMLElement>(80);
+  const quoteRef = useReveal<HTMLElement>(140);
+  const proofRef = useReveal<HTMLElement>(60);
+  const faqRef = useReveal<HTMLElement>(55);
+  const ctaRef = useReveal<HTMLElement>(100);
+  const heroParallaxRef = useParallax<HTMLDivElement>(0.08, isReducedMotion);
 
   useEffect(() => {
     const query = window.matchMedia('(min-width: 769px)');
@@ -236,9 +273,6 @@ export default function LandingPage() {
               <h1 className="display-hero reveal-child landing-hero__title">
                 Cuidado que acalma.
                 <br />
-                Beleza que aparece.
-                <br />
-                Rotina que flui.
               </h1>
               <p className="body-lead reveal-child landing-hero__lead">
                 Banho, tosa e acompanhamento digital em uma experiência desenhada para parecer calma, precisa e realmente especial.
@@ -263,7 +297,12 @@ export default function LandingPage() {
 
             <div className="reveal-child landing-hero__visual">
               <div className="image-frame landing-hero__image-frame">
-                <img src={heroImage} alt="Pet em retrato emocional olhando para a câmera" className="landing-hero__image" />
+                <img
+                  ref={heroParallaxRef}
+                  src={heroImage}
+                  alt="Pet em retrato emocional olhando para a câmera"
+                  className="landing-hero__image"
+                />
                 <div className="landing-hero__overlay" aria-hidden="true" />
                 <div className={`floating-pill landing-hero__status ${isReducedMotion ? '' : 'animate-float'}`}>
                   <span className="floating-pill__dot" />
@@ -278,7 +317,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="rotina" className="landing-marquee-section">
+        <section id="rotina" ref={servicesRef} className="steno-reveal landing-marquee-section">
           <div className="landing-marquee">
             <div
               className={`landing-marquee__track ${isReducedMotion ? '' : 'animate-marquee'}`}
@@ -295,7 +334,7 @@ export default function LandingPage() {
 
           <div className="editorial-shell landing-services">
             {serviceCards.map((card) => (
-              <article key={card.title} className="card landing-services__card">
+              <article key={card.title} className="card landing-services__card reveal-child">
                 <div className="landing-services__image-wrap">
                   <img src={card.image} alt={card.title} className="landing-services__image" loading="lazy" />
                 </div>
@@ -306,7 +345,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section ref={quoteRef} className="steno-reveal landing-quote-section">
+        <section ref={quoteRef} className="steno-reveal landing-quote-section texture-grain">
           <div className="editorial-shell landing-quote">
             <div className="reveal-child landing-quote__copy">
               <div className="editorial-kicker landing-quote__label">a filosofia do cuidado</div>
@@ -337,10 +376,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="credenciais" className="landing-proof">
+        <section id="credenciais" ref={proofRef} className="steno-reveal landing-proof">
           <div className="editorial-shell landing-proof__row" aria-label="Credenciais e diferenciais">
             {socialProof.map((item) => (
-              <div key={item} className="landing-proof__item">
+              <div key={item} className="landing-proof__item reveal-child">
                 {item}
               </div>
             ))}
@@ -427,6 +466,7 @@ export default function LandingPage() {
         }
 
         .landing-nav__link {
+          padding: 25px 25px 0 25px;
           font-family: var(--font-ui);
           font-size: 0.9rem;
           color: var(--color-text-secondary);
@@ -548,6 +588,11 @@ export default function LandingPage() {
           object-fit: cover;
         }
 
+        .landing-hero__image {
+          will-change: transform;
+          transform-origin: center;
+        }
+
         .landing-hero__overlay {
           position: absolute;
           inset: 0;
@@ -647,6 +692,14 @@ export default function LandingPage() {
           border-bottom: var(--border-subtle);
         }
 
+        .landing-services__image {
+          transition: transform var(--motion-slow) var(--ease-emphasis);
+        }
+
+        .landing-services__card:hover .landing-services__image {
+          transform: scale(1.06);
+        }
+
         .landing-services__title,
         .landing-services__text {
           padding-left: var(--space-5);
@@ -667,8 +720,8 @@ export default function LandingPage() {
 
         .landing-quote-section {
           padding: var(--space-section) 0;
-          background: #18130f;
-          color: #f8f2ea;
+          background: var(--color-dark-bg);
+          color: var(--color-dark-text);
         }
 
         .landing-quote {
@@ -676,23 +729,26 @@ export default function LandingPage() {
           grid-template-columns: minmax(0, 1fr) minmax(0, 0.88fr);
           gap: clamp(32px, 6vw, 88px);
           align-items: center;
+          position: relative;
+          z-index: var(--z-base);
         }
 
         .landing-quote__label {
-          background: rgba(255, 255, 255, 0.06);
-          border-color: rgba(255, 255, 255, 0.1);
-          color: rgba(248, 242, 234, 0.72);
+          background: var(--color-dark-surface-hover);
+          border-color: var(--color-dark-border);
+          color: var(--color-dark-text-subtle);
         }
 
         .landing-quote__title {
           font-size: clamp(3rem, 6vw, 5.2rem);
           line-height: 0.96;
+          letter-spacing: var(--tracking-tighter);
           margin: var(--space-5) 0 var(--space-5);
         }
 
         .landing-quote__text {
           max-width: 34rem;
-          color: rgba(248, 242, 234, 0.74);
+          color: var(--color-dark-text-muted);
           font-size: 1.05rem;
           line-height: 1.75;
         }
@@ -747,6 +803,11 @@ export default function LandingPage() {
           letter-spacing: 0.08em;
           text-transform: uppercase;
           color: var(--color-text-secondary);
+          transition: color var(--motion-base) var(--ease-standard);
+        }
+
+        .landing-proof__item:hover {
+          color: var(--color-brand-600);
         }
 
         .landing-faq {
