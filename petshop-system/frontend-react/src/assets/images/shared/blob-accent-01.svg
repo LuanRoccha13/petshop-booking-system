@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 500" fill="none" aria-hidden="true">
+  <defs>
+    <radialGradient id="blob-fill" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.18"/>
+      <stop offset="55%" stop-color="#e85a28" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#ffe9df" stop-opacity="0.04"/>
+    </radialGradient>
+    <radialGradient id="blob-inner" cx="40%" cy="45%" r="45%">
+      <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffe9df" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Primary blob -->
+  <path
+    d="M310 60 C390 40 480 80 510 160 C540 240 520 340 460 400 C400 460 300 480 220 450 C140 420 80 360 70 270 C60 180 110 90 190 65 C230 52 270 68 310 60Z"
+    fill="url(#blob-fill)"
+  />
+  <!-- Secondary inner glow -->
+  <path
+    d="M300 120 C355 105 420 135 440 195 C460 255 445 325 400 365 C355 405 285 415 235 390 C185 365 155 310 160 250 C165 190 205 130 260 118 C280 113 290 124 300 120Z"
+    fill="url(#blob-inner)"
+  />
+</svg>

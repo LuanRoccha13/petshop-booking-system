@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" aria-label="Ilustração de cachorro">
+  <defs>
+    <radialGradient id="dog-bg" cx="50%" cy="60%" r="45%">
+      <stop offset="0%" stop-color="#fff4e8"/>
+      <stop offset="100%" stop-color="#ffe0d2"/>
+    </radialGradient>
+    <!-- Collar color: brand-500 -->
+    <linearGradient id="collar-dog" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#e85a28"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background soft circle -->
+  <circle cx="100" cy="110" r="88" fill="url(#dog-bg)" fill-opacity="0.7"/>
+
+  <!-- Body — neutral warm gray -->
+  <ellipse cx="100" cy="130" rx="42" ry="36" fill="#d4cbc0"/>
+
+  <!-- Tail -->
+  <path d="M140 125 Q162 108 158 92 Q155 80 148 88 Q144 96 138 110Z" fill="#c8bfb4"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="88" r="28" fill="#d4cbc0"/>
+
+  <!-- Ears — floppy -->
+  <ellipse cx="77" cy="76" rx="11" ry="16" fill="#c8bfb4" transform="rotate(-12 77 76)"/>
+  <ellipse cx="123" cy="76" rx="11" ry="16" fill="#c8bfb4" transform="rotate(12 123 76)"/>
+  <!-- Ear inner -->
+  <ellipse cx="77" cy="78" rx="6" ry="10" fill="#bbb0a5" fill-opacity="0.5" transform="rotate(-12 77 76)"/>
+  <ellipse cx="123" cy="78" rx="6" ry="10" fill="#bbb0a5" fill-opacity="0.5" transform="rotate(12 123 76)"/>
+
+  <!-- Snout -->
+  <ellipse cx="100" cy="97" rx="13" ry="10" fill="#c0b7ac"/>
+  <!-- Nose -->
+  <ellipse cx="100" cy="93" rx="5" ry="3.5" fill="#5f6b64"/>
+  <!-- Mouth -->
+  <path d="M95 99 Q100 104 105 99" stroke="#5f6b64" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+
+  <!-- Eyes -->
+  <circle cx="91" cy="84" r="4.5" fill="#1f2421"/>
+  <circle cx="109" cy="84" r="4.5" fill="#1f2421"/>
+  <circle cx="92.5" cy="82.5" r="1.5" fill="white" fill-opacity="0.7"/>
+  <circle cx="110.5" cy="82.5" r="1.5" fill="white" fill-opacity="0.7"/>
+
+  <!-- Collar — brand accent, acima do corpo -->
+  <rect x="71" y="112" width="58" height="9" rx="4.5" fill="url(#collar-dog)"/>
+  <!-- Collar tag -->
+  <circle cx="100" cy="125" r="5" fill="#c84b20"/>
+  <circle cx="100" cy="125" r="3" fill="#ff6b35"/>
+
+  <!-- Front legs -->
+  <rect x="82" y="158" width="14" height="22" rx="7" fill="#d4cbc0"/>
+  <rect x="104" y="158" width="14" height="22" rx="7" fill="#d4cbc0"/>
+  <!-- Paw pads -->
+  <ellipse cx="89" cy="178" rx="5" ry="3" fill="#c8bfb4"/>
+  <ellipse cx="111" cy="178" rx="5" ry="3" fill="#c8bfb4"/>
+</svg>

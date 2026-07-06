@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 280" fill="none" aria-label="Nenhum agendamento ainda" role="img">
+  <defs>
+    <radialGradient id="es-bg" cx="50%" cy="55%" r="50%">
+      <stop offset="0%" stop-color="#fff4e8"/>
+      <stop offset="100%" stop-color="#ffe9df" stop-opacity="0.3"/>
+    </radialGradient>
+    <linearGradient id="es-collar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#e85a28"/>
+    </linearGradient>
+    <linearGradient id="es-cal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#e85a28"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Soft background circle -->
+  <circle cx="160" cy="140" r="120" fill="url(#es-bg)"/>
+
+  <!-- ── Calendar illustration (left) ── -->
+  <rect x="30" y="80" width="90" height="80" rx="12" fill="white" stroke="#ece9e4" stroke-width="1.5"/>
+  <rect x="30" y="80" width="90" height="24" rx="12" fill="url(#es-cal)"/>
+  <rect x="30" y="92" width="90" height="12" fill="url(#es-cal)"/>
+  <!-- Calendar binding rings -->
+  <circle cx="58" cy="80" r="5" fill="white" stroke="#e85a28" stroke-width="1.5"/>
+  <circle cx="92" cy="80" r="5" fill="white" stroke="#e85a28" stroke-width="1.5"/>
+  <!-- Calendar grid dots -->
+  <circle cx="48" cy="120" r="3" fill="#ece9e4"/>
+  <circle cx="60" cy="120" r="3" fill="#ff6b35"/>
+  <circle cx="72" cy="120" r="3" fill="#ece9e4"/>
+  <circle cx="84" cy="120" r="3" fill="#ece9e4"/>
+  <circle cx="48" cy="136" r="3" fill="#ece9e4"/>
+  <circle cx="60" cy="136" r="3" fill="#ece9e4"/>
+  <circle cx="72" cy="136" r="3" fill="#ece9e4"/>
+  <circle cx="84" cy="136" r="3" fill="#ece9e4"/>
+
+  <!-- ── Dog sitting (center-right) ── -->
+  <!-- Body -->
+  <ellipse cx="190" cy="175" rx="35" ry="28" fill="#d4cbc0"/>
+  <!-- Head -->
+  <circle cx="190" cy="135" r="26" fill="#d4cbc0"/>
+  <!-- Ears -->
+  <ellipse cx="168" cy="125" rx="10" ry="14" fill="#c8bfb4" transform="rotate(-10 168 125)"/>
+  <ellipse cx="212" cy="125" rx="10" ry="14" fill="#c8bfb4" transform="rotate(10 212 125)"/>
+  <!-- Snout -->
+  <ellipse cx="190" cy="143" rx="12" ry="9" fill="#c0b7ac"/>
+  <!-- Nose -->
+  <ellipse cx="190" cy="139" rx="4.5" ry="3" fill="#5f6b64"/>
+  <!-- Mouth + smile -->
+  <path d="M185 145 Q190 150 195 145" stroke="#5f6b64" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+  <!-- Eyes — happy -->
+  <path d="M181 131 Q184 128 187 131" stroke="#1f2421" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <path d="M193 131 Q196 128 199 131" stroke="#1f2421" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Eyebrows friendly -->
+  <path d="M180 127 Q184 124 188 127" stroke="#a09590" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <path d="M192 127 Q196 124 200 127" stroke="#a09590" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <!-- Collar — brand accent -->
+  <rect x="165" y="157" width="50" height="8" rx="4" fill="url(#es-collar)"/>
+  <circle cx="190" cy="168" r="4.5" fill="#c84b20"/>
+  <circle cx="190" cy="168" r="2.5" fill="#ff6b35"/>
+  <!-- Sitting legs -->
+  <rect x="170" y="194" width="14" height="16" rx="7" fill="#d4cbc0"/>
+  <rect x="200" y="194" width="14" height="16" rx="7" fill="#d4cbc0"/>
+  <!-- Tail wag -->
+  <path d="M224 175 Q248 160 244 178 Q242 192 230 188" fill="#c8bfb4" stroke="#bfb6ab" stroke-width="0.5"/>
+
+  <!-- ── Decorative stars / sparkles ── -->
+  <circle cx="128" cy="72" r="3.5" fill="#ff6b35" fill-opacity="0.5"/>
+  <circle cx="255" cy="88" r="2.5" fill="#e85a28" fill-opacity="0.4"/>
+  <circle cx="270" cy="175" r="2" fill="#ff6b35" fill-opacity="0.35"/>
+  <circle cx="65" cy="175" r="2" fill="#e85a28" fill-opacity="0.35"/>
+  <!-- Plus marks -->
+  <path d="M246 118 v6 M243 121 h6" stroke="#ff6b35" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <path d="M78 58 v6 M75 61 h6" stroke="#e85a28" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.35"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 60" preserveAspectRatio="none" fill="none" aria-hidden="true">
+  <path
+    d="M0 30 C120 60 240 0 360 30 C480 60 600 0 720 30 C840 60 960 0 1080 30 C1200 60 1320 0 1440 30 L1440 60 L0 60 Z"
+    fill="#fff4e8"
+    fill-opacity="0.6"
+  />
+  <path
+    d="M0 40 C180 10 360 55 540 35 C720 15 900 50 1080 35 C1260 20 1380 45 1440 40 L1440 60 L0 60 Z"
+    fill="#ffe9df"
+    fill-opacity="0.4"
+  />
+</svg>

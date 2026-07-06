@@ -1,91 +1,173 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
+import dogLogoSvg from '../assets/images/landing/dog-sleeping-svgrepo-com.svg';
+import notFoundImage from '../assets/images/mais-imagens-pet-shop/hayffield-l-ZVdZw2p08y4-unsplash.jpg';
 
 export default function NotFoundPage() {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'var(--gradient-hero)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: 'var(--font-body)',
-        textAlign: 'center',
-        padding: 'var(--space-8)',
-      }}
-    >
-      {/* Decorative blobs */}
-      <div aria-hidden="true" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,107,53,0.1) 0%, transparent 70%)' }} />
-        <div style={{ position: 'absolute', bottom: -80, left: -80, width: 320, height: 320, borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,90,40,0.07) 0%, transparent 70%)' }} />
-      </div>
-
-      <div
+    <div style={{ minHeight: '100vh', background: 'var(--gradient-hero)' }}>
+      <header
+        className="page-topbar"
         style={{
-          background: 'var(--color-surface)',
-          borderRadius: 'var(--radius-xl)',
-          border: 'var(--border-subtle)',
-          boxShadow: 'var(--shadow-lg)',
-          padding: 'var(--space-12) var(--space-10)',
-          maxWidth: 460,
-          width: '100%',
-          position: 'relative',
-          zIndex: 1,
+          background: 'rgba(248, 242, 234, 0.82)',
+          borderBottom: '1px solid rgba(64, 43, 21, 0.08)',
         }}
       >
-        <div
-          style={{
-            width: 80,
-            height: 80,
-            borderRadius: 'var(--radius-xl)',
-            background: 'var(--color-brand-soft)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 36,
-            margin: '0 auto var(--space-6)',
-          }}
-          aria-hidden="true"
-        >
-          🐾
+        <div className="page-topbar__inner">
+          <Link to="/" className="brand-mark" aria-label="Voltar para a página inicial do PetShop B&T">
+            <span className="brand-mark__icon">
+              <img
+                src={dogLogoSvg}
+                alt=""
+                aria-hidden="true"
+                style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+              />
+            </span>
+            <span className="brand-mark__name">
+              PetShop <strong>B&T</strong>
+            </span>
+          </Link>
+          <Link to="/" className="btn btn-ghost hide-mobile">
+            Voltar ao início
+          </Link>
         </div>
+      </header>
 
-        <h1
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(36px, 8vw, 56px)',
-            fontWeight: 700,
-            color: 'var(--color-brand-500)',
-            margin: '0 0 var(--space-3)',
-            lineHeight: 1,
-          }}
-        >
-          404
-        </h1>
-        <h2
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 20,
-            fontWeight: 600,
-            color: 'var(--color-text)',
-            margin: '0 0 var(--space-4)',
-          }}
-        >
-          Página não encontrada
-        </h2>
-        <p style={{ fontSize: 15, color: 'var(--color-text-muted)', lineHeight: 1.6, margin: '0 0 var(--space-8)' }}>
-          Parece que este caminho não existe. Que tal voltar e cuidar do seu pet?
-        </p>
-        <Link
-          to="/"
-          className="btn btn-primary"
-          style={{ display: 'inline-flex', textDecoration: 'none' }}
-          id="notfound-home-link"
-        >
-          Voltar ao início
-        </Link>
-      </div>
+      <main className="editorial-shell notfound-shell">
+        <div className="notfound-shell__grid">
+          <section className="notfound-shell__copy">
+            <div className="editorial-kicker notfound-shell__badge">página não encontrada</div>
+            <div className="notfound-shell__code">404</div>
+            <h1 className="display-title notfound-shell__title">
+              Esse caminho saiu da rota.
+              <br />
+              O cuidado continua por aqui.
+            </h1>
+            <p className="body-lead notfound-shell__text">
+              A página que você tentou abrir não existe mais. Mas o caminho para agendar o próximo banho ou tosa continua simples e direto.
+            </p>
+            <div className="notfound-shell__actions">
+              <Link to="/" className="btn btn-primary btn-lg">
+                Voltar ao início
+              </Link>
+              <Link to="/login" className="btn btn-secondary btn-lg">
+                Ir para o login
+              </Link>
+            </div>
+          </section>
+
+          <aside className="notfound-shell__visual" aria-hidden="true">
+            <div className="image-frame notfound-shell__image-frame">
+              <img src={notFoundImage} alt="" className="notfound-shell__image" />
+              <div className="floating-pill notfound-shell__floating animate-float">
+                <span className="floating-pill__dot" />
+                <div>
+                  <div className="notfound-shell__floating-title">Rota segura</div>
+                  <div className="notfound-shell__floating-text">Use os botões ao lado para voltar ao fluxo principal.</div>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+
+      <style>{`
+        .notfound-shell {
+          display: flex;
+          align-items: center;
+          min-height: calc(100vh - 77px);
+          padding: var(--space-section) 0;
+        }
+
+        .notfound-shell__grid {
+          display: grid;
+          grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
+          gap: clamp(32px, 6vw, 84px);
+          align-items: center;
+          width: 100%;
+        }
+
+        .notfound-shell__badge {
+          margin-bottom: var(--space-5);
+        }
+
+        .notfound-shell__code {
+          font-family: var(--font-display);
+          font-size: clamp(5rem, 13vw, 10rem);
+          line-height: 0.82;
+          color: var(--color-brand-500);
+          margin-bottom: var(--space-4);
+        }
+
+        .notfound-shell__title {
+          max-width: 11ch;
+          margin-bottom: var(--space-4);
+        }
+
+        .notfound-shell__text {
+          max-width: 33rem;
+        }
+
+        .notfound-shell__actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-4);
+          margin-top: var(--space-8);
+        }
+
+        .notfound-shell__image-frame {
+          aspect-ratio: 4 / 5;
+        }
+
+        .notfound-shell__image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .notfound-shell__floating {
+          position: absolute;
+          left: 24px;
+          right: 24px;
+          bottom: 24px;
+        }
+
+        .notfound-shell__floating-title {
+          font-family: var(--font-ui);
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+
+        .notfound-shell__floating-text {
+          color: var(--color-text-muted);
+          font-size: 0.82rem;
+          line-height: 1.55;
+        }
+
+        @media (max-width: 1023px) {
+          .notfound-shell__grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .notfound-shell {
+            padding: var(--space-10) 0 var(--space-section);
+          }
+
+          .notfound-shell__actions > * {
+            width: 100%;
+          }
+
+          .notfound-shell__floating {
+            position: static;
+            margin: var(--space-4);
+          }
+
+          .notfound-shell__image-frame {
+            aspect-ratio: 1 / 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }

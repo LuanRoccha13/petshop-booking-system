@@ -30,3 +30,8 @@ Uma entrega so e aceita se cumprir todos os itens:
 3. Estados de erro, loading e sucesso desenhados.
 4. Nenhum componente com estilo generico de browser.
 5. Animacoes fluidas, sem salto perceptivel.
+6. Grades de cards em seções (ex.: depoimentos) não podem terminar com card órfão sem tratamento de layout.
+7. Identidade de marca (logo) deve ser consistente em todas as telas com header/topbar.
+8. Em mobile, navegação principal não pode comprimir links/CTAs a ponto de comprometer toque e leitura.
+9. CTA visível no dashboard deve ter utilidade real validável (ação concreta no fluxo).
+10. Em mobile, a navbar deve expor navegação por menu de hamburguer ou equivalente acessível quando a largura não comportar a versão horizontal.

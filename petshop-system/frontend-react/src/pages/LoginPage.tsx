@@ -1,189 +1,11 @@
-import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import { FormEvent, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthShell } from '../components/AuthShell';
+import heroImage from '../assets/images/mais-imagens-pet-shop/reba-spike-PEQIIwnIGdo-unsplash.jpg';
 import { useAuth } from '../hooks/useAuth';
 import { getErrorMessage } from '../utils/errors';
 import { validateEmail, validatePassword } from '../utils/validation';
 
-/* ─── Shared auth page layout wrapper ──────────────────────────────────────── */
-function AuthLayout({
-  children,
-  title,
-  subtitle,
-  badgeText,
-}: {
-  children: React.ReactNode;
-  title: string;
-  subtitle: string;
-  badgeText: string;
-}) {
-  return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: 'var(--gradient-hero)',
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: 'var(--font-body)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Decorative background circles */}
-      <div aria-hidden="true" style={{ position: 'fixed', inset: 0, pointerEvents: 'none' }}>
-        <div
-          style={{
-            position: 'absolute',
-            top: -120,
-            right: -120,
-            width: 500,
-            height: 500,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,107,53,0.1) 0%, transparent 70%)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: -100,
-            left: -100,
-            width: 400,
-            height: 400,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(232,90,40,0.07) 0%, transparent 70%)',
-          }}
-        />
-      </div>
-
-      {/* Top nav bar */}
-      <header
-        style={{
-          padding: '0 var(--space-6)',
-          background: 'rgba(255,255,255,0.7)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderBottom: 'var(--border-subtle)',
-          position: 'relative',
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1100,
-            margin: '0 auto',
-            height: 64,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <a
-            href="/"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--space-3)',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              fontSize: 18,
-              color: 'var(--color-text)',
-              textDecoration: 'none',
-            }}
-            aria-label="Voltar para a página inicial"
-          >
-            <span
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--gradient-cta)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-                boxShadow: 'var(--shadow-sm)',
-                flexShrink: 0,
-              }}
-              aria-hidden="true"
-            >
-              🐾
-            </span>
-            PetShop <span style={{ color: 'var(--color-brand-500)', marginLeft: 4 }}>B&T</span>
-          </a>
-        </div>
-      </header>
-
-      {/* Center card */}
-      <main
-        style={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: 'var(--space-10) var(--space-6)',
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
-        <div
-          style={{
-            width: '100%',
-            maxWidth: 460,
-            background: 'var(--color-surface)',
-            borderRadius: 'var(--radius-xl)',
-            border: 'var(--border-subtle)',
-            boxShadow: 'var(--shadow-lg)',
-            padding: 'clamp(var(--space-8), 5vw, var(--space-12))',
-          }}
-        >
-          {/* Badge */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-              background: 'var(--color-brand-soft)',
-              border: '1px solid rgba(255,107,53,0.22)',
-              borderRadius: 'var(--radius-pill)',
-              padding: '5px 14px',
-              marginBottom: 'var(--space-5)',
-              fontSize: 12,
-              fontWeight: 600,
-              color: 'var(--color-brand-600)',
-            }}
-          >
-            <span aria-hidden="true">🐾</span>
-            {badgeText}
-          </div>
-
-          <h1
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(22px, 4vw, 28px)',
-              fontWeight: 700,
-              color: 'var(--color-text)',
-              marginBottom: 'var(--space-2)',
-            }}
-          >
-            {title}
-          </h1>
-          <p
-            style={{
-              fontSize: 15,
-              color: 'var(--color-text-muted)',
-              marginBottom: 'var(--space-8)',
-              lineHeight: 1.55,
-            }}
-          >
-            {subtitle}
-          </p>
-
-          {children}
-        </div>
-      </main>
-    </div>
-  );
-}
-
-/* ─── Spinner ───────────────────────────────────────────────────────────────── */
 function Spinner() {
   return (
     <svg
@@ -201,7 +23,6 @@ function Spinner() {
   );
 }
 
-/* ─── Field component ───────────────────────────────────────────────────────── */
 function Field({
   id,
   label,
@@ -239,29 +60,9 @@ function Field({
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
         className={`field-input${error ? ' is-error' : ''}`}
-        style={{
-          borderColor: error ? 'var(--color-danger)' : undefined,
-          boxShadow: error ? '0 0 0 4px rgba(217,48,54,0.1)' : undefined,
-        }}
       />
       {error && (
-        <span
-          id={`${id}-error`}
-          role="alert"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 4,
-            fontSize: 12,
-            color: 'var(--color-danger)',
-            marginTop: 'var(--space-1)',
-            fontWeight: 500,
-          }}
-        >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
-            <circle cx="6" cy="6" r="6" opacity="0.15" />
-            <path d="M6 3.5v3M6 8.5h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
+        <span id={`${id}-error`} role="alert" className="field-helper is-error">
           {error}
         </span>
       )}
@@ -269,7 +70,6 @@ function Field({
   );
 }
 
-/* ─── LoginPage ─────────────────────────────────────────────────────────────── */
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -308,10 +108,37 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthLayout
-      badgeText="Bem-vindo de volta"
-      title="Entre na sua conta"
-      subtitle="Acesse seus agendamentos e cuide do seu pet com facilidade."
+    <AuthShell
+      badgeText="Área do cliente"
+      title={
+        <>
+          Entre com calma.
+          <br />
+          Seu ritual já começou.
+        </>
+      }
+      subtitle="Acompanhe confirmações, horários e recados do atendimento em um painel limpo, rápido e acolhedor."
+      visualLabel="Retorno tranquilo"
+      visualTitle={
+        <>
+          Cada visita merece
+          <br />
+          a mesma delicadeza.
+        </>
+      }
+      visualCopy="Do login ao check-in, a experiência foi desenhada para parecer premium sem deixar de ser humana."
+      imageSrc={heroImage}
+      imageAlt="Cachorro em retrato calmo olhando para a câmera"
+      floatingTitle="Agenda confirmada"
+      floatingText="Acesse horários, lembretes e cuidados do seu pet em poucos segundos."
+      footer={
+        <p style={{ fontSize: 14, color: 'var(--color-text-muted)', textAlign: 'center' }}>
+          Não tem conta?{' '}
+          <Link to="/register" style={{ color: 'var(--color-brand-600)', fontWeight: 600 }}>
+            Criar conta grátis
+          </Link>
+        </p>
+      }
     >
       <form onSubmit={handleSubmit} noValidate>
         <Field
@@ -361,35 +188,10 @@ export default function LoginPage() {
               Entrando...
             </>
           ) : (
-            'Entrar'
+            'Entrar agora'
           )}
         </button>
       </form>
-
-      <p
-        style={{
-          textAlign: 'center',
-          marginTop: 'var(--space-6)',
-          fontSize: 14,
-          color: 'var(--color-text-muted)',
-        }}
-      >
-        Não tem conta?{' '}
-        <a
-          href="/register"
-          style={{
-            color: 'var(--color-brand-600)',
-            fontWeight: 600,
-            textDecoration: 'none',
-            borderBottom: '1px solid transparent',
-            transition: 'border-color var(--motion-base)',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.borderBottomColor = 'var(--color-brand-600)')}
-          onMouseLeave={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
-        >
-          Criar conta grátis
-        </a>
-      </p>
-    </AuthLayout>
+    </AuthShell>
   );
 }

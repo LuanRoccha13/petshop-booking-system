@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" aria-label="Ilustração de gato">
+  <defs>
+    <radialGradient id="cat-bg" cx="50%" cy="60%" r="45%">
+      <stop offset="0%" stop-color="#fff4e8"/>
+      <stop offset="100%" stop-color="#ffe0d2"/>
+    </radialGradient>
+    <!-- Collar color: brand-600 — variação discreta -->
+    <linearGradient id="collar-cat" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e85a28"/>
+      <stop offset="100%" stop-color="#c84b20"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background soft circle -->
+  <circle cx="100" cy="110" r="88" fill="url(#cat-bg)" fill-opacity="0.7"/>
+
+  <!-- Body -->
+  <ellipse cx="100" cy="135" rx="38" ry="32" fill="#ccc4ba"/>
+
+  <!-- Tail -->
+  <path d="M138 130 Q165 115 162 140 Q160 158 148 155 Q140 150 138 140Z" fill="#c2b9af" stroke="#b8b0a5" stroke-width="0.5"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="88" r="27" fill="#ccc4ba"/>
+
+  <!-- Ears — pointed -->
+  <polygon points="75,70 68,48 88,62" fill="#ccc4ba"/>
+  <polygon points="125,70 132,48 112,62" fill="#ccc4ba"/>
+  <!-- Inner ears -->
+  <polygon points="77,68 72,52 86,64" fill="#ffe9df" fill-opacity="0.6"/>
+  <polygon points="123,68 128,52 114,64" fill="#ffe9df" fill-opacity="0.6"/>
+
+  <!-- Snout area -->
+  <ellipse cx="100" cy="97" rx="12" ry="9" fill="#bab1a7"/>
+  <!-- Nose -->
+  <path d="M97 93 L100 91 L103 93 L100 95Z" fill="#5f6b64"/>
+  <!-- Mouth -->
+  <path d="M96 96 Q100 100 104 96" stroke="#5f6b64" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <!-- Whiskers -->
+  <line x1="75" y1="95" x2="90" y2="96" stroke="#8a8178" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="75" y1="99" x2="90" y2="98" stroke="#8a8178" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="125" y1="95" x2="110" y2="96" stroke="#8a8178" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="125" y1="99" x2="110" y2="98" stroke="#8a8178" stroke-width="0.8" stroke-linecap="round"/>
+
+  <!-- Eyes — cat eyes slightly almond-shaped -->
+  <ellipse cx="90" cy="84" rx="5" ry="4.5" fill="#1f2421"/>
+  <ellipse cx="110" cy="84" rx="5" ry="4.5" fill="#1f2421"/>
+  <!-- Pupils — vertical slit -->
+  <ellipse cx="90" cy="84" rx="1.8" ry="3.8" fill="#2e3a30"/>
+  <ellipse cx="110" cy="84" rx="1.8" ry="3.8" fill="#2e3a30"/>
+  <!-- Eye shine -->
+  <circle cx="92" cy="82" r="1.4" fill="white" fill-opacity="0.7"/>
+  <circle cx="112" cy="82" r="1.4" fill="white" fill-opacity="0.7"/>
+
+  <!-- Collar — brand-600 accent, variação discreta -->
+  <rect x="74" y="111" width="52" height="9" rx="4.5" fill="url(#collar-cat)"/>
+  <!-- Small bell -->
+  <circle cx="100" cy="124" r="5.5" fill="#c84b20"/>
+  <circle cx="100" cy="123" r="3.2" fill="#ff6b35" fill-opacity="0.7"/>
+  <line x1="100" y1="126" x2="100" y2="128" stroke="#c84b20" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Front paws -->
+  <ellipse cx="86" cy="164" rx="11" ry="8" fill="#ccc4ba"/>
+  <ellipse cx="114" cy="164" rx="11" ry="8" fill="#ccc4ba"/>
+  <!-- Toes hint -->
+  <path d="M80 161 Q86 158 92 161" stroke="#b8b0a5" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M108 161 Q114 158 120 161" stroke="#b8b0a5" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+  <!-- Main pad -->
+  <ellipse cx="32" cy="42" rx="14" ry="12" fill="#ff6b35" fill-opacity="0.22"/>
+  <!-- Toe pads -->
+  <ellipse cx="18" cy="30" rx="6" ry="7" fill="#ff6b35" fill-opacity="0.18"/>
+  <ellipse cx="28" cy="24" rx="6" ry="7" fill="#e85a28" fill-opacity="0.18"/>
+  <ellipse cx="38" cy="24" rx="6" ry="7" fill="#e85a28" fill-opacity="0.18"/>
+  <ellipse cx="48" cy="30" rx="6" ry="7" fill="#ff6b35" fill-opacity="0.18"/>
+</svg>

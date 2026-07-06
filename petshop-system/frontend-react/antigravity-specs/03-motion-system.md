@@ -42,6 +42,20 @@
 - Backdrop: opacity 0 -> 1 em motion-base
 - Panel: opacity 0 -> 1, scale 0.97 -> 1 em motion-base
 
+6. Auth side visual motion
+- Trigger: carregamento das telas login/cadastro
+- Effect: entrada em camadas (badge/card lateral, depois imagem do pet)
+- Timing: motion-base a motion-slow, ease-emphasis
+- Optional: float sutil no pet com amplitude baixa
+- Constraint: manter foco visual no formulario, sem loops agressivos
+
+7. Error page motion (404)
+- Trigger: carregamento da tela de erro
+- Effect: card principal com fade + translateY curto
+- CTA: hover com leve elevação e press 0.98
+- Elemento visual: micro-float discreto, baixa amplitude
+- Constraint: manter leitura e orientação do usuário como prioridade
+
 ## Motion constraints
 
 - Nao aplicar animacao continua em elementos de leitura.

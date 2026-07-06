@@ -1,1087 +1,921 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import dogLogoSvg from '../assets/images/landing/dog-sleeping-svgrepo-com.svg';
+import heroImage from '../assets/images/mais-imagens-pet-shop/pexels-goochie-poochie-19145889.jpg';
+import quoteImage from '../assets/images/mais-imagens-pet-shop/pexels-tima-miroshnichenko-6131165.jpg';
+import serviceImageOne from '../assets/images/mais-imagens-pet-shop/pexels-goochie-poochie-19145890.jpg';
+import serviceImageTwo from '../assets/images/mais-imagens-pet-shop/pexels-gustavo-fring-6816860.jpg';
+import serviceImageThree from '../assets/images/mais-imagens-pet-shop/buddy-an-LpK2xddrElI-unsplash.jpg';
 
-/* ─── Data ─────────────────────────────────────────────────────────────────── */
-
-const services = [
-  {
-    icon: (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <circle cx="20" cy="20" r="20" fill="#ffe9df" />
-        <path d="M12 24c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#ff6b35" strokeWidth="2.2" strokeLinecap="round"/>
-        <ellipse cx="20" cy="16" rx="3" ry="3.5" stroke="#ff6b35" strokeWidth="2.2"/>
-        <path d="M16 28c0 0 1.2 2 4 2s4-2 4-2" stroke="#ff6b35" strokeWidth="2.2" strokeLinecap="round"/>
-        <path d="M14 20c-2 0-3.5 1.5-3.5 3s1 2.5 2.5 2.5" stroke="#e85a28" strokeWidth="1.8" strokeLinecap="round"/>
-        <path d="M26 20c2 0 3.5 1.5 3.5 3s-1 2.5-2.5 2.5" stroke="#e85a28" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    ),
-    title: 'Banho Completo',
-    description: 'Banho com produtos naturais premium, secagem profissional e hidratação do pelo. Seu pet sai perfumado e confortável.',
-  },
-  {
-    icon: (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <circle cx="20" cy="20" r="20" fill="#ffe9df" />
-        <path d="M13 14l14 12M27 14L13 26" stroke="#ff6b35" strokeWidth="2.2" strokeLinecap="round"/>
-        <circle cx="20" cy="20" r="3" fill="#ffe9df" stroke="#ff6b35" strokeWidth="2.2"/>
-        <path d="M20 10v4M20 26v4M10 20h4M26 20h4" stroke="#e85a28" strokeWidth="1.8" strokeLinecap="round"/>
-      </svg>
-    ),
-    title: 'Tosa Especializada',
-    description: 'Cortes para todas as raças com profissionais certificados. Usamos equipamentos de alta qualidade e técnicas modernas.',
-  },
-  {
-    icon: (
-      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <circle cx="20" cy="20" r="20" fill="#ffe9df" />
-        <path d="M20 12c-4.4 0-8 3.6-8 8v2c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-2c0-4.4-3.6-8-8-8z" stroke="#ff6b35" strokeWidth="2.2" fill="none"/>
-        <path d="M17 24v2a3 3 0 006 0v-2" stroke="#e85a28" strokeWidth="1.8" strokeLinecap="round"/>
-        <circle cx="17" cy="19" r="1.5" fill="#ff6b35"/>
-        <circle cx="23" cy="19" r="1.5" fill="#ff6b35"/>
-      </svg>
-    ),
-    title: 'Cuidados Completos',
-    description: 'Limpeza de ouvido, corte de unhas, escovação dental e tratamentos especializados. Saúde e bem-estar em um só lugar.',
-  },
-];
-
-const benefits = [
-  {
-    icon: '🏆',
-    title: 'Profissionais Certificados',
-    text: 'Equipe treinada e apaixonada por animais, com certificações em pet grooming.',
-  },
-  {
-    icon: '📅',
-    title: 'Agendamento Online',
-    text: 'Agende em segundos direto pelo app, sem ligações e sem filas de espera.',
-  },
-  {
-    icon: '🌿',
-    title: 'Produtos Naturais',
-    text: 'Linha hipoalergênica e ecológica. Seguro para peles sensíveis e filhotes.',
-  },
-  {
-    icon: '❤️',
-    title: 'Ambiente Acolhedor',
-    text: 'Espaço projetado para reduzir estresse. Seu pet se sente em casa aqui.',
-  },
-];
-
-const testimonials = [
-  {
-    name: 'Ana Silva',
-    pet: 'Max — Labrador',
-    feedback: 'Excelente atendimento! O Max saiu feliz, perfumado e super bem cuidado. Com certeza voltarei.',
-    avatar: 'AS',
-    rating: 5,
-  },
-  {
-    name: 'Carlos Oliveira',
-    pet: 'Luna — Gato Persa',
-    feedback: 'Profissionais competentes e ambiente muito limpo. A Luna ficou calma o tempo todo. Recomendo muito!',
-    avatar: 'CO',
-    rating: 5,
-  },
-  {
-    name: 'Marina Costa',
-    pet: 'Bella — Poodle',
-    feedback: 'Ótima experiência do início ao fim. O agendamento é super fácil e o resultado é incrível.',
-    avatar: 'MC',
-    rating: 5,
-  },
-  {
-    name: 'Roberto Santos',
-    pet: 'Rex — Pastor Alemão',
-    feedback: 'Agendamento rápido e atendimento impecável. O Rex adorou a equipe. Virei cliente fiel!',
-    avatar: 'RS',
-    rating: 5,
-  },
-];
-
-/* ─── Hook: IntersectionObserver reveal ────────────────────────────────────── */
-
-function useReveal() {
-  const ref = useRef<HTMLElement>(null);
+function useReveal<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    const element = ref.current;
+    if (!element) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            // Reveal stagger children too
-            entry.target.querySelectorAll('.reveal').forEach((child, i) => {
-              setTimeout(() => child.classList.add('is-visible'), i * 60);
-            });
-          }
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          entry.target.querySelectorAll<HTMLElement>('.reveal-child').forEach((child, index) => {
+            window.setTimeout(() => child.classList.add('is-visible'), index * 90);
+          });
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.15 },
     );
 
-    observer.observe(el);
+    observer.observe(element);
     return () => observer.disconnect();
   }, []);
 
   return ref;
 }
 
-/* ─── Sub-components ────────────────────────────────────────────────────────── */
+function useReducedMotion() {
+  const [reducedMotion, setReducedMotion] = useState(false);
 
-function StarRating({ count }: { count: number }) {
-  return (
-    <div style={{ display: 'flex', gap: 2 }} aria-label={`${count} de 5 estrelas`}>
-      {Array.from({ length: count }).map((_, i) => (
-        <svg key={i} width="16" height="16" viewBox="0 0 16 16" fill="#ff6b35" aria-hidden="true">
-          <path d="M8 1l1.8 3.6L14 5.4l-3 2.9.7 4.1L8 10.4l-3.7 2 .7-4.1-3-2.9 4.2-.8z" />
-        </svg>
-      ))}
-    </div>
-  );
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(query.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => setReducedMotion(event.matches);
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
+  }, []);
+
+  return reducedMotion;
 }
 
-/* ─── Page ──────────────────────────────────────────────────────────────────── */
+function useScrollState() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return isScrolled;
+}
+
+const navLinks = [
+  { href: '#rotina', label: 'Rotina' },
+  { href: '#credenciais', label: 'Credenciais' },
+  { href: '#faq', label: 'FAQ' },
+];
+
+const marqueeItems = [
+  'Banho premium com hora marcada',
+  'Produtos hipoalergênicos selecionados',
+  'Secagem silenciosa e manejo gentil',
+  'Check-ins claros no seu painel',
+  'Tosa com acabamento por porte e raça',
+  'Lembretes para manter a rotina em dia',
+];
+
+const serviceCards = [
+  {
+    title: 'Banho com acabamento leve',
+    text: 'Limpeza, hidratação e secagem pensadas para deixar o pelo bonito sem estressar o pet.',
+    image: serviceImageOne,
+  },
+  {
+    title: 'Tosa com leitura de temperamento',
+    text: 'Cada detalhe do corte respeita raça, conforto e o ritmo natural do atendimento.',
+    image: serviceImageTwo,
+  },
+  {
+    title: 'Rotina que continua no digital',
+    text: 'Agende, confirme e acompanhe tudo em um fluxo claro, sem ligações ou esperas longas.',
+    image: serviceImageThree,
+  },
+];
+
+const socialProof = [
+  'Equipe certificada',
+  'Produtos hipoalergênicos',
+  'Atendimento com hora marcada',
+  'Ritual sem estresse',
+];
+
+const faqs = [
+  {
+    q: 'Vocês atendem cães e gatos com temperamento mais sensível?',
+    a: 'Sim. Organizamos o fluxo para reduzir ruído, espera e excesso de estímulos, priorizando uma chegada tranquila para pets mais sensíveis.',
+  },
+  {
+    q: 'Como funciona o agendamento online?',
+    a: 'Você cria a conta, escolhe a data e o horário e acompanha tudo no dashboard. O processo foi desenhado para ser rápido e claro desde o primeiro acesso.',
+  },
+  {
+    q: 'Quais produtos entram no banho?',
+    a: 'Usamos cosméticos premium com foco em conforto da pele e brilho do pelo. Quando houver alguma observação especial, você pode sinalizar no cadastro do agendamento.',
+  },
+  {
+    q: 'Posso remarcar ou cancelar depois?',
+    a: 'Sim. No painel do cliente você encontra seus agendamentos ativos e pode cancelar com segurança quando precisar reorganizar a rotina.',
+  },
+];
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const isReducedMotion = useReducedMotion();
+  const isScrolled = useScrollState();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const heroRef = useReveal() as React.RefObject<HTMLElement>;
-  const servicesRef = useReveal() as React.RefObject<HTMLElement>;
-  const benefitsRef = useReveal() as React.RefObject<HTMLElement>;
-  const testimonialsRef = useReveal() as React.RefObject<HTMLElement>;
-  const ctaRef = useReveal() as React.RefObject<HTMLElement>;
+  const heroRef = useReveal<HTMLElement>();
+  const quoteRef = useReveal<HTMLElement>();
+  const faqRef = useReveal<HTMLElement>();
+  const ctaRef = useReveal<HTMLElement>();
+
+  useEffect(() => {
+    const query = window.matchMedia('(min-width: 769px)');
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (event.matches) setMenuOpen(false);
+    };
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
+  }, []);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-bg)', fontFamily: 'var(--font-body)' }}>
-
-      {/* ─── Navbar ──────────────────────────────────────────────────────────── */}
+    <div style={{ minHeight: '100vh', background: 'var(--color-bg)', overflowX: 'hidden' }}>
       <header
-        id="landing-navbar"
+        className="page-topbar"
         style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 100,
-          background: 'rgba(255,255,255,0.82)',
-          backdropFilter: 'blur(18px)',
-          WebkitBackdropFilter: 'blur(18px)',
-          borderBottom: 'var(--border-subtle)',
-          padding: '0 var(--space-6)',
+          background: isScrolled ? 'rgba(248, 242, 234, 0.84)' : 'rgba(248, 242, 234, 0.3)',
+          borderBottom: isScrolled ? '1px solid rgba(64, 43, 21, 0.1)' : '1px solid transparent',
+          boxShadow: isScrolled ? '0 8px 32px rgba(33, 24, 17, 0.06)' : 'none',
+          transition: 'background var(--motion-base) var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard), border-color var(--motion-base) var(--ease-standard)',
         }}
       >
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: '0 auto',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: 68,
-            gap: 'var(--space-8)',
-          }}
-        >
-          {/* Logo */}
-          <a
-            href="/"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--space-3)',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              fontSize: 20,
-              color: 'var(--color-text)',
-              textDecoration: 'none',
-            }}
-            aria-label="PetShop Banho & Tosa — página inicial"
-          >
-            <span
-              style={{
-                width: 38,
-                height: 38,
-                borderRadius: 'var(--radius-md)',
-                background: 'var(--gradient-cta)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 20,
-                boxShadow: 'var(--shadow-sm)',
-                flexShrink: 0,
-              }}
-              aria-hidden="true"
-            >
-              🐾
+        <div className="page-topbar__inner">
+          <a href="/" className="brand-mark" aria-label="Voltar para a página inicial do PetShop B&T">
+            <span className="brand-mark__icon">
+              <img
+                src={dogLogoSvg}
+                alt=""
+                aria-hidden="true"
+                style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+              />
             </span>
-            <span>PetShop <span style={{ color: 'var(--color-brand-500)' }}>B&T</span></span>
+            <span className="brand-mark__name">
+              PetShop <strong>B&T</strong>
+            </span>
           </a>
 
-          {/* Nav links — hidden on small screens */}
-          <nav
-            aria-label="Links de navegação"
-            style={{ display: 'flex', gap: 'var(--space-8)', alignItems: 'center' }}
-          >
-            {[
-              ['#services', 'Serviços'],
-              ['#benefits', 'Benefícios'],
-              ['#testimonials', 'Avaliações'],
-            ].map(([href, label]) => (
-              <a
-                key={href}
-                href={href}
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: 'var(--color-text-muted)',
-                  textDecoration: 'none',
-                  transition: 'color var(--motion-base) var(--ease-standard)',
-                }}
-                className="nav-link"
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-brand-500)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-muted)')}
-              >
-                {label}
+          <nav className="landing-nav hide-mobile" aria-label="Navegação principal">
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href} className="landing-nav__link">
+                {link.label}
               </a>
             ))}
           </nav>
 
-          {/* CTA actions */}
-          <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
-            <button
-              className="btn btn-secondary"
-              onClick={() => navigate('/login')}
-              style={{ padding: '10px 20px', minHeight: 44, fontSize: 14 }}
-              id="navbar-login-btn"
-            >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+            <button className="btn btn-ghost hide-mobile" onClick={() => navigate('/login')}>
               Entrar
             </button>
-            <button
-              className="btn btn-primary"
-              onClick={() => navigate('/register')}
-              style={{ padding: '10px 20px', minHeight: 44, fontSize: 14 }}
-              id="navbar-cta-btn"
-            >
+            <button className="btn btn-primary hide-mobile" onClick={() => navigate('/register')}>
               Quero agendar
             </button>
+            <button
+              className="landing-burger"
+              aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+              aria-expanded={menuOpen}
+              aria-controls="landing-mobile-menu"
+              onClick={() => setMenuOpen((current) => !current)}
+            >
+              <span className={`steno-burger-icon ${menuOpen ? 'is-open' : ''}`} aria-hidden="true" />
+            </button>
           </div>
+        </div>
+
+        <div id="landing-mobile-menu" className={`steno-mobile-panel ${menuOpen ? 'is-open' : ''}`}>
+          <nav className="landing-mobile-nav">
+            {navLinks.map((link) => (
+              <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="landing-mobile-nav__link">
+                {link.label}
+              </a>
+            ))}
+            <div className="landing-mobile-nav__actions">
+              <button
+                className="btn btn-ghost"
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate('/login');
+                }}
+              >
+                Entrar
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate('/register');
+                }}
+              >
+                Quero agendar
+              </button>
+            </div>
+          </nav>
         </div>
       </header>
 
-      {/* ─── Hero ────────────────────────────────────────────────────────────── */}
-      <section
-        id="hero"
-        ref={heroRef as React.RefObject<HTMLDivElement>}
-        className="reveal"
-        style={{
-          background: 'var(--gradient-hero)',
-          padding: 'var(--space-20) var(--space-6)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        aria-label="Seção principal"
-      >
-        {/* Decorative shapes */}
-        <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-          <div
-            style={{
-              position: 'absolute',
-              top: -80,
-              right: -80,
-              width: 480,
-              height: 480,
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%)',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              bottom: -60,
-              left: -60,
-              width: 360,
-              height: 360,
-              borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(232,90,40,0.08) 0%, transparent 70%)',
-            }}
-          />
-          {/* Floating paw prints */}
-          {[
-            { top: '15%', left: '8%', size: 28, opacity: 0.18, delay: '0s' },
-            { top: '70%', left: '5%', size: 20, opacity: 0.12, delay: '0.4s' },
-            { top: '25%', right: '12%', size: 22, opacity: 0.15, delay: '0.8s' },
-            { top: '60%', right: '8%', size: 32, opacity: 0.1, delay: '0.2s' },
-          ].map((s, i) => (
-            <span
-              key={i}
-              style={{
-                position: 'absolute',
-                top: s.top,
-                left: (s as any).left,
-                right: (s as any).right,
-                fontSize: s.size,
-                opacity: s.opacity,
-                animation: `float 6s ease-in-out ${s.delay} infinite`,
-              }}
-            >
-              🐾
-            </span>
-          ))}
-        </div>
-
-        <div
-          style={{
-            maxWidth: 800,
-            margin: '0 auto',
-            textAlign: 'center',
-            position: 'relative',
-            zIndex: 1,
-          }}
-        >
-          {/* Badge */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 'var(--space-2)',
-              background: 'rgba(255,107,53,0.12)',
-              border: '1px solid rgba(255,107,53,0.28)',
-              borderRadius: 'var(--radius-pill)',
-              padding: '6px 16px',
-              marginBottom: 'var(--space-8)',
-              fontSize: 13,
-              fontWeight: 600,
-              color: 'var(--color-brand-600)',
-            }}
-          >
-            <span aria-hidden="true">✨</span>
-            Cuidado profissional para seu melhor amigo
-          </div>
-
-          {/* Headline */}
-          <h1
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(40px, 7vw, 64px)',
-              fontWeight: 700,
-              lineHeight: 1.05,
-              color: 'var(--color-text)',
-              marginBottom: 'var(--space-6)',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Seu pet merece o{' '}
-            <span
-              style={{
-                background: 'var(--gradient-cta)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              melhor cuidado
-            </span>
-            {' '}possível
-          </h1>
-
-          {/* Subheadline */}
-          <p
-            style={{
-              fontSize: 'clamp(16px, 2.5vw, 20px)',
-              lineHeight: 1.6,
-              color: 'var(--color-text-muted)',
-              maxWidth: 560,
-              margin: '0 auto var(--space-10)',
-            }}
-          >
-            Banho, tosa e cuidados completos com profissionais apaixonados e
-            agendamento 100% online. Rápido, fácil e sem estresse.
-          </p>
-
-          {/* CTAs */}
-          <div
-            style={{
-              display: 'flex',
-              gap: 'var(--space-4)',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
-            <button
-              className="btn btn-primary btn-lg"
-              onClick={() => navigate('/register')}
-              id="hero-cta-primary"
-              style={{ animation: 'pulse-glow 3s ease-in-out 2s infinite' }}
-            >
-              <span aria-hidden="true">📅</span>
-              Quero agendar
-            </button>
-            <button
-              className="btn btn-secondary btn-lg"
-              onClick={() => {
-                document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              id="hero-cta-secondary"
-            >
-              Conhecer serviços
-            </button>
-          </div>
-
-          {/* Social proof */}
-          <div
-            style={{
-              marginTop: 'var(--space-12)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 'var(--space-6)',
-              flexWrap: 'wrap',
-            }}
-          >
-            {[
-              { value: '2.400+', label: 'Pets atendidos' },
-              { value: '4.9★', label: 'Avaliação média' },
-              { value: '100%', label: 'Satisfação garantida' },
-            ].map((stat) => (
-              <div
-                key={stat.value}
-                style={{
-                  textAlign: 'center',
-                  padding: '12px 16px',
-                  background: 'rgba(255,255,255,0.7)',
-                  borderRadius: 'var(--radius-lg)',
-                  border: 'var(--border-subtle)',
-                  backdropFilter: 'blur(8px)',
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 24,
-                    fontWeight: 700,
-                    color: 'var(--color-brand-600)',
-                    lineHeight: 1.1,
-                  }}
-                >
-                  {stat.value}
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--color-text-muted)', marginTop: 4, fontWeight: 500 }}>
-                  {stat.label}
-                </div>
+      <main>
+        <section id="hero" ref={heroRef} className="steno-reveal landing-hero">
+          <div className="editorial-shell landing-hero__grid">
+            <div className="landing-hero__copy">
+              <div className="editorial-kicker reveal-child">
+                <span className="floating-pill__dot" style={{ width: 8, height: 8, boxShadow: 'none' }} />
+                cuidado premium em cada retorno
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Services ────────────────────────────────────────────────────────── */}
-      <section
-        id="services"
-        ref={servicesRef as React.RefObject<HTMLDivElement>}
-        style={{
-          padding: 'var(--space-20) var(--space-6)',
-          background: 'var(--color-surface)',
-        }}
-        aria-label="Nossos serviços"
-      >
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          {/* Section header */}
-          <div className="reveal" style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--color-brand-500)',
-                marginBottom: 'var(--space-3)',
-              }}
-            >
-              O que oferecemos
-            </span>
-            <h2
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(28px, 5vw, 48px)',
-                fontWeight: 700,
-                lineHeight: 1.1,
-                color: 'var(--color-text)',
-                marginBottom: 'var(--space-4)',
-              }}
-            >
-              Serviços completos,{' '}
-              <br />
-              resultado impecável
-            </h2>
-            <p style={{ fontSize: 18, color: 'var(--color-text-muted)', maxWidth: 480, margin: '0 auto' }}>
-              Cada serviço pensado para o conforto e saúde do seu animal.
-            </p>
-          </div>
-
-          {/* Cards grid */}
-          <div
-            className="reveal-stagger"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: 'var(--space-6)',
-            }}
-          >
-            {services.map((service, i) => (
-              <article
-                key={i}
-                className="card reveal"
-                style={{
-                  background: 'var(--gradient-card-highlight)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 'var(--space-5)',
-                  cursor: 'default',
-                }}
-              >
-                <div
-                  style={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: 'var(--radius-md)',
-                    background: 'var(--color-brand-soft)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
+              <h1 className="display-hero reveal-child landing-hero__title">
+                Cuidado que acalma.
+                <br />
+                Beleza que aparece.
+                <br />
+                Rotina que flui.
+              </h1>
+              <p className="body-lead reveal-child landing-hero__lead">
+                Banho, tosa e acompanhamento digital em uma experiência desenhada para parecer calma, precisa e realmente especial.
+              </p>
+              <div className="reveal-child landing-hero__actions">
+                <button className="btn btn-primary btn-lg" onClick={() => navigate('/register')}>
+                  Criar minha conta
+                </button>
+                <button
+                  className="btn btn-secondary btn-lg"
+                  onClick={() => document.getElementById('rotina')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  {service.icon}
-                </div>
-                <div>
-                  <h3
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: 20,
-                      fontWeight: 600,
-                      color: 'var(--color-text)',
-                      marginBottom: 'var(--space-3)',
-                    }}
-                  >
-                    {service.title}
-                  </h3>
-                  <p style={{ fontSize: 15, lineHeight: 1.6, color: 'var(--color-text-muted)' }}>
-                    {service.description}
-                  </p>
-                </div>
-                <div style={{ marginTop: 'auto' }}>
-                  <button
-                    className="btn btn-ghost"
-                    onClick={() => navigate('/register')}
-                    style={{ padding: '10px 0', fontWeight: 600, fontSize: 14 }}
-                  >
-                    Agendar agora →
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Benefits ────────────────────────────────────────────────────────── */}
-      <section
-        id="benefits"
-        ref={benefitsRef as React.RefObject<HTMLDivElement>}
-        style={{
-          padding: 'var(--space-20) var(--space-6)',
-          background: 'var(--color-surface-soft)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        aria-label="Nossos diferenciais"
-      >
-        {/* Decorative blob */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 700,
-            height: 700,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,107,53,0.05) 0%, transparent 60%)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
-          <div className="reveal" style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--color-brand-500)',
-                marginBottom: 'var(--space-3)',
-              }}
-            >
-              Por que nos escolher
-            </span>
-            <h2
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(28px, 5vw, 48px)',
-                fontWeight: 700,
-                lineHeight: 1.1,
-                color: 'var(--color-text)',
-              }}
-            >
-              Diferenciais que fazem{' '}
-              <br />a diferença
-            </h2>
-          </div>
-
-          <div
-            className="reveal-stagger"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: 'var(--space-6)',
-            }}
-          >
-            {benefits.map((b, i) => (
-              <div
-                key={i}
-                className="reveal"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 'var(--space-4)',
-                  padding: 'var(--space-6)',
-                  background: 'var(--color-surface)',
-                  borderRadius: 'var(--radius-lg)',
-                  border: 'var(--border-subtle)',
-                  boxShadow: 'var(--shadow-sm)',
-                  transition: 'transform var(--motion-base) var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard)',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-lg)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                  (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-sm)';
-                }}
-              >
-                <div
-                  style={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 'var(--radius-md)',
-                    background: 'var(--gradient-hero)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 24,
-                  }}
-                  aria-hidden="true"
-                >
-                  {b.icon}
-                </div>
-                <div>
-                  <h3
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: 17,
-                      fontWeight: 600,
-                      color: 'var(--color-text)',
-                      marginBottom: 'var(--space-2)',
-                    }}
-                  >
-                    {b.title}
-                  </h3>
-                  <p style={{ fontSize: 14, lineHeight: 1.6, color: 'var(--color-text-muted)' }}>
-                    {b.text}
-                  </p>
-                </div>
+                  Ver a experiência
+                </button>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <div className="reveal-child landing-hero__meta">
+                <span>Atendimento com hora marcada</span>
+                <span>Produtos suaves</span>
+                <span>Painel para acompanhar tudo</span>
+              </div>
+            </div>
 
-      {/* ─── Testimonials ────────────────────────────────────────────────────── */}
-      <section
-        id="testimonials"
-        ref={testimonialsRef as React.RefObject<HTMLDivElement>}
-        style={{
-          padding: 'var(--space-20) var(--space-6)',
-          background: 'var(--color-surface)',
-        }}
-        aria-label="Avaliações dos clientes"
-      >
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div className="reveal" style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: 'var(--color-brand-500)',
-                marginBottom: 'var(--space-3)',
-              }}
-            >
-              Quem já passou por aqui
-            </span>
-            <h2
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(28px, 5vw, 48px)',
-                fontWeight: 700,
-                lineHeight: 1.1,
-                color: 'var(--color-text)',
-              }}
-            >
-              O que nossos clientes dizem
-            </h2>
-          </div>
-
-          <div
-            className="reveal-stagger"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              gap: 'var(--space-6)',
-            }}
-          >
-            {testimonials.map((t, i) => (
-              <article
-                key={i}
-                className="card reveal"
-                style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}
-              >
-                {/* Stars */}
-                <StarRating count={t.rating} />
-
-                {/* Quote */}
-                <blockquote
-                  style={{
-                    margin: 0,
-                    fontSize: 15,
-                    lineHeight: 1.7,
-                    color: 'var(--color-text)',
-                    flexGrow: 1,
-                    fontStyle: 'normal',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 32,
-                      lineHeight: 0.6,
-                      color: 'var(--color-brand-soft)',
-                      fontFamily: 'Georgia, serif',
-                      display: 'block',
-                      marginBottom: 4,
-                    }}
-                    aria-hidden="true"
-                  >
-                    "
-                  </span>
-                  {t.feedback}
-                </blockquote>
-
-                {/* Author */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 'var(--space-3)',
-                    paddingTop: 'var(--space-4)',
-                    borderTop: 'var(--border-subtle)',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: '50%',
-                      background: 'var(--gradient-cta)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: '#fff',
-                      flexShrink: 0,
-                    }}
-                    aria-hidden="true"
-                  >
-                    {t.avatar}
-                  </div>
+            <div className="reveal-child landing-hero__visual">
+              <div className="image-frame landing-hero__image-frame">
+                <img src={heroImage} alt="Pet em retrato emocional olhando para a câmera" className="landing-hero__image" />
+                <div className="landing-hero__overlay" aria-hidden="true" />
+                <div className={`floating-pill landing-hero__status ${isReducedMotion ? '' : 'animate-float'}`}>
+                  <span className="floating-pill__dot" />
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text)' }}>
-                      {t.name}
-                    </div>
-                    <div style={{ fontSize: 12, color: 'var(--color-text-muted)', marginTop: 2 }}>
-                      {t.pet}
-                    </div>
+                    <div className="landing-hero__status-title">Banho + hidratação confirmados</div>
+                    <div className="landing-hero__status-text">Hoje, 14h • chegada calma, saída impecável.</div>
                   </div>
                 </div>
+                <div className="landing-hero__micro-pill">check-in sereno</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="rotina" className="landing-marquee-section">
+          <div className="landing-marquee">
+            <div
+              className={`landing-marquee__track ${isReducedMotion ? '' : 'animate-marquee'}`}
+              style={{ animationPlayState: isReducedMotion ? 'paused' : 'running' }}
+            >
+              {[...marqueeItems, ...marqueeItems].map((item, index) => (
+                <div key={`${item}-${index}`} className="landing-marquee__item">
+                  <span className="landing-marquee__symbol">•</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="editorial-shell landing-services">
+            {serviceCards.map((card) => (
+              <article key={card.title} className="card landing-services__card">
+                <div className="landing-services__image-wrap">
+                  <img src={card.image} alt={card.title} className="landing-services__image" loading="lazy" />
+                </div>
+                <h2 className="landing-services__title">{card.title}</h2>
+                <p className="landing-services__text">{card.text}</p>
               </article>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ─── CTA Final ───────────────────────────────────────────────────────── */}
-      <section
-        id="cta-final"
-        ref={ctaRef as React.RefObject<HTMLDivElement>}
-        className="reveal"
-        style={{
-          background: 'var(--gradient-cta)',
-          padding: 'var(--space-20) var(--space-6)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        aria-label="Call to action final"
-      >
-        {/* Decorative overlay */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 60%)',
-            pointerEvents: 'none',
-          }}
-        />
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            top: -100,
-            right: -100,
-            width: 400,
-            height: 400,
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.07)',
-            pointerEvents: 'none',
-          }}
-        />
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            bottom: -80,
-            left: -80,
-            width: 320,
-            height: 320,
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.06)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        <div
-          style={{
-            maxWidth: 680,
-            margin: '0 auto',
-            textAlign: 'center',
-            position: 'relative',
-            zIndex: 1,
-          }}
-        >
-          <div style={{ fontSize: 48, marginBottom: 'var(--space-6)', lineHeight: 1 }} aria-hidden="true">
-            🐾
+        <section ref={quoteRef} className="steno-reveal landing-quote-section">
+          <div className="editorial-shell landing-quote">
+            <div className="reveal-child landing-quote__copy">
+              <div className="editorial-kicker landing-quote__label">a filosofia do cuidado</div>
+              <h2 className="landing-quote__title">
+                A beleza vem depois.
+                <br />
+                A confiança vem primeiro.
+              </h2>
+              <p className="landing-quote__text">
+                Quando o atendimento é previsível, gentil e bem executado, o resultado aparece no pelo, no olhar e na tranquilidade de quem deixa o pet com a gente.
+              </p>
+              <div className="landing-quote__metrics">
+                <div>
+                  <strong>Hora marcada</strong>
+                  <span>Sem correria desnecessária</span>
+                </div>
+                <div>
+                  <strong>Equipe cuidadosa</strong>
+                  <span>Leitura de comportamento em cada etapa</span>
+                </div>
+              </div>
+            </div>
+            <div className="reveal-child landing-quote__visual">
+              <div className="image-frame landing-quote__image-frame">
+                <img src={quoteImage} alt="Momento de cuidado profissional com um pet" className="landing-quote__image" loading="lazy" />
+              </div>
+            </div>
           </div>
-          <h2
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(28px, 5vw, 44px)',
-              fontWeight: 700,
-              lineHeight: 1.1,
-              color: '#ffffff',
-              marginBottom: 'var(--space-5)',
-            }}
-          >
-            Pronto para cuidar do seu pet?
-          </h2>
-          <p
-            style={{
-              fontSize: 18,
-              lineHeight: 1.6,
-              color: 'rgba(255,255,255,0.88)',
-              marginBottom: 'var(--space-10)',
-              maxWidth: 480,
-              margin: '0 auto var(--space-10)',
-            }}
-          >
-            Crie sua conta grátis e agende em menos de 2 minutos.
-            Seu melhor amigo vai adorar.
-          </p>
-          <div
-            style={{
-              display: 'flex',
-              gap: 'var(--space-4)',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
-            <button
-              className="btn btn-lg"
-              onClick={() => navigate('/register')}
-              id="cta-final-register-btn"
-              style={{
-                background: '#ffffff',
-                color: 'var(--color-brand-600)',
-                fontWeight: 700,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
-              }}
-            >
-              Criar conta grátis
-            </button>
-            <button
-              className="btn btn-lg"
-              onClick={() => navigate('/login')}
-              id="cta-final-login-btn"
-              style={{
-                background: 'rgba(255,255,255,0.15)',
-                color: '#ffffff',
-                border: '2px solid rgba(255,255,255,0.4)',
-                backdropFilter: 'blur(4px)',
-              }}
-            >
-              Já tenho conta
-            </button>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ─── Footer ──────────────────────────────────────────────────────────── */}
-      <footer
-        style={{
-          background: 'var(--color-text)',
-          padding: 'var(--space-12) var(--space-6)',
-          color: 'rgba(255,255,255,0.75)',
-        }}
-        aria-label="Rodapé"
-      >
-        <div
-          style={{
-            maxWidth: 1100,
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 'var(--space-6)',
-            textAlign: 'center',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 'var(--space-3)',
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-              fontSize: 18,
-              color: '#ffffff',
-            }}
-          >
-            <span
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 'var(--radius-sm)',
-                background: 'var(--gradient-cta)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 18,
-              }}
-              aria-hidden="true"
-            >
-              🐾
-            </span>
-            PetShop Banho & Tosa
-          </div>
-
-          <nav
-            aria-label="Links do rodapé"
-            style={{ display: 'flex', gap: 'var(--space-8)', flexWrap: 'wrap', justifyContent: 'center' }}
-          >
-            {[
-              ['#services', 'Serviços'],
-              ['#benefits', 'Benefícios'],
-              ['#testimonials', 'Avaliações'],
-            ].map(([href, label]) => (
-              <a
-                key={href}
-                href={href}
-                style={{
-                  fontSize: 14,
-                  color: 'rgba(255,255,255,0.6)',
-                  transition: 'color var(--motion-base) var(--ease-standard)',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,1)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}
-              >
-                {label}
-              </a>
+        <section id="credenciais" className="landing-proof">
+          <div className="editorial-shell landing-proof__row" aria-label="Credenciais e diferenciais">
+            {socialProof.map((item) => (
+              <div key={item} className="landing-proof__item">
+                {item}
+              </div>
             ))}
-          </nav>
+          </div>
+        </section>
 
-          <div
-            style={{
-              width: '100%',
-              height: 1,
-              background: 'rgba(255,255,255,0.1)',
-            }}
-            role="separator"
-          />
+        <section id="faq" ref={faqRef} className="steno-reveal landing-faq">
+          <div className="editorial-shell landing-faq__grid">
+            <div className="reveal-child landing-faq__intro">
+              <div className="editorial-kicker">dúvidas frequentes</div>
+              <h2 className="display-title landing-faq__title">
+                Pergunte sem pressa.
+                <br />
+                A gente responde com clareza.
+              </h2>
+              <p className="body-lead">Um FAQ leve, direto e pensado para deixar a decisão simples.</p>
+            </div>
+            <div className="reveal-child landing-faq__list">
+              {faqs.map((faq, index) => {
+                const isOpen = openFaq === index;
+                return (
+                  <div key={faq.q} className="landing-faq__item">
+                    <button
+                      className="faq-trigger landing-faq__trigger"
+                      onClick={() => setOpenFaq(isOpen ? null : index)}
+                      aria-expanded={isOpen}
+                      aria-controls={`faq-panel-${index}`}
+                      id={`faq-trigger-${index}`}
+                    >
+                      <span>{faq.q}</span>
+                      <span aria-hidden="true" className="landing-faq__icon" style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}>
+                        +
+                      </span>
+                    </button>
+                    <div
+                      id={`faq-panel-${index}`}
+                      role="region"
+                      aria-labelledby={`faq-trigger-${index}`}
+                      style={{
+                        display: 'grid',
+                        gridTemplateRows: isOpen ? '1fr' : '0fr',
+                        transition: isReducedMotion ? 'none' : 'grid-template-rows 0.3s var(--ease-standard)',
+                      }}
+                    >
+                      <div style={{ overflow: 'hidden' }}>
+                        <p className="landing-faq__answer">{faq.a}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
 
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-            © 2026 PetShop Banho & Tosa. Todos os direitos reservados.
-          </p>
-        </div>
-      </footer>
+        <section ref={ctaRef} className="steno-reveal landing-cta">
+          <div className="editorial-shell">
+            <div className="surface-panel landing-cta__panel reveal-child">
+              <div className="editorial-kicker">pronto para começar</div>
+              <h2 className="landing-cta__title">Seu próximo cuidado pode começar agora.</h2>
+              <p className="body-lead landing-cta__text">
+                Crie sua conta, escolha o melhor horário e acompanhe tudo em um fluxo tão bonito quanto funcional.
+              </p>
+              <div className="landing-cta__actions">
+                <button className="btn btn-primary btn-lg" onClick={() => navigate('/register')}>
+                  Quero agendar
+                </button>
+                <button className="btn btn-secondary btn-lg" onClick={() => navigate('/login')}>
+                  Já tenho conta
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
 
-      {/* ─── Responsive overrides ─────────────────────────────────────────────── */}
+      <footer className="landing-footer">© {new Date().getFullYear()} PetShop B&T. Cuidado premium com presença humana.</footer>
+
       <style>{`
-        .nav-link { position: relative; }
-        .nav-link::after {
+        .landing-nav {
+          display: flex;
+          align-items: center;
+          gap: clamp(24px, 4vw, 44px);
+        }
+
+        .landing-nav__link {
+          font-family: var(--font-ui);
+          font-size: 0.9rem;
+          color: var(--color-text-secondary);
+          position: relative;
+          transition: color var(--motion-base) var(--ease-standard);
+        }
+
+        .landing-nav__link::after {
           content: '';
           position: absolute;
-          bottom: -2px; left: 0;
-          width: 0; height: 2px;
+          left: 0;
+          bottom: -8px;
+          width: 100%;
+          height: 1px;
           background: var(--color-brand-500);
-          border-radius: 2px;
-          transition: width var(--motion-base) var(--ease-standard);
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform var(--motion-base) var(--ease-standard);
         }
-        .nav-link:hover::after { width: 100%; }
 
-        @media (min-width: 768px) {
-          .nav-link { display: inline !important; }
-          .landing-nav-links { display: flex !important; }
+        .landing-nav__link:hover {
+          color: var(--color-text);
         }
-        @media (max-width: 480px) {
-          #hero-cta-primary, #hero-cta-secondary {
-            width: 100%; justify-content: center;
+
+        .landing-nav__link:hover::after {
+          transform: scaleX(1);
+        }
+
+        .landing-burger {
+          display: none;
+          width: 42px;
+          height: 42px;
+          border-radius: 14px;
+          border: 1px solid rgba(64, 43, 21, 0.1);
+          background: rgba(255, 253, 250, 0.72);
+          color: var(--color-text);
+          align-items: center;
+          justify-content: center;
+        }
+
+        .landing-mobile-nav {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-2);
+          padding: 0 0 var(--space-6);
+        }
+
+        .landing-mobile-nav__link {
+          padding: var(--space-3) 0;
+          font-family: var(--font-ui);
+          font-weight: 600;
+          color: var(--color-text);
+        }
+
+        .landing-mobile-nav__actions {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-3);
+          margin-top: var(--space-2);
+        }
+
+        .landing-mobile-nav__actions .btn {
+          width: 100%;
+        }
+
+        .landing-hero {
+          padding: clamp(48px, 9vw, 96px) 0 var(--space-section);
+        }
+
+        .landing-hero__grid {
+          display: grid;
+          grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+          gap: clamp(32px, 6vw, 84px);
+          align-items: center;
+        }
+
+        .landing-hero__title {
+          margin: var(--space-5) 0 var(--space-5);
+          max-width: 10ch;
+        }
+
+        .landing-hero__lead {
+          max-width: 33rem;
+        }
+
+        .landing-hero__actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-4);
+          margin: var(--space-8) 0 var(--space-8);
+        }
+
+        .landing-hero__meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-3);
+          color: var(--color-text-secondary);
+          font-size: 0.86rem;
+          font-family: var(--font-ui);
+        }
+
+        .landing-hero__meta span {
+          padding: 10px 14px;
+          border-radius: var(--radius-pill);
+          background: rgba(255, 255, 255, 0.5);
+          border: 1px solid rgba(64, 43, 21, 0.08);
+        }
+
+        .landing-hero__image-frame {
+          aspect-ratio: 4 / 5;
+          min-height: 560px;
+        }
+
+        .landing-hero__image,
+        .landing-quote__image,
+        .landing-services__image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .landing-hero__overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, rgba(22, 17, 12, 0.02) 0%, rgba(22, 17, 12, 0.26) 100%);
+        }
+
+        .landing-hero__status {
+          position: absolute;
+          left: clamp(20px, 4vw, 36px);
+          bottom: clamp(20px, 4vw, 36px);
+          max-width: min(92%, 360px);
+          z-index: 2;
+        }
+
+        .landing-hero__status-title {
+          font-family: var(--font-ui);
+          font-size: 0.87rem;
+          font-weight: 600;
+        }
+
+        .landing-hero__status-text {
+          color: var(--color-text-muted);
+          font-size: 0.83rem;
+          line-height: 1.5;
+        }
+
+        .landing-hero__micro-pill {
+          position: absolute;
+          top: 24px;
+          right: 24px;
+          z-index: 2;
+          padding: 10px 14px;
+          border-radius: var(--radius-pill);
+          background: rgba(255, 250, 244, 0.72);
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          font-family: var(--font-ui);
+          font-size: 0.74rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--color-text-secondary);
+        }
+
+        .landing-marquee-section {
+          padding-bottom: var(--space-section);
+        }
+
+        .landing-marquee {
+          overflow: hidden;
+          border-top: var(--border-subtle);
+          border-bottom: var(--border-subtle);
+          background: rgba(255, 253, 250, 0.58);
+        }
+
+        .landing-marquee__track {
+          display: flex;
+          align-items: center;
+          gap: var(--space-4);
+          width: max-content;
+          min-width: 200%;
+          padding: 18px 0;
+        }
+
+        .landing-marquee__item {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--space-2);
+          padding: 10px 16px;
+          border-radius: var(--radius-pill);
+          background: rgba(255, 255, 255, 0.7);
+          border: 1px solid rgba(64, 43, 21, 0.08);
+          font-family: var(--font-ui);
+          font-size: 0.84rem;
+          color: var(--color-text-secondary);
+          white-space: nowrap;
+        }
+
+        .landing-marquee__symbol {
+          color: var(--color-brand-500);
+          font-size: 1rem;
+        }
+
+        .landing-services {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: var(--space-5);
+          margin-top: var(--space-10);
+        }
+
+        .landing-services__card {
+          padding: 0;
+          background: rgba(255, 253, 250, 0.74);
+        }
+
+        .landing-services__image-wrap {
+          aspect-ratio: 4 / 3;
+          overflow: hidden;
+          border-bottom: var(--border-subtle);
+        }
+
+        .landing-services__title,
+        .landing-services__text {
+          padding-left: var(--space-5);
+          padding-right: var(--space-5);
+        }
+
+        .landing-services__title {
+          font-size: 1.9rem;
+          line-height: 1;
+          padding-top: var(--space-5);
+          margin-bottom: var(--space-2);
+        }
+
+        .landing-services__text {
+          color: var(--color-text-muted);
+          padding-bottom: var(--space-5);
+        }
+
+        .landing-quote-section {
+          padding: var(--space-section) 0;
+          background: #18130f;
+          color: #f8f2ea;
+        }
+
+        .landing-quote {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 0.88fr);
+          gap: clamp(32px, 6vw, 88px);
+          align-items: center;
+        }
+
+        .landing-quote__label {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.1);
+          color: rgba(248, 242, 234, 0.72);
+        }
+
+        .landing-quote__title {
+          font-size: clamp(3rem, 6vw, 5.2rem);
+          line-height: 0.96;
+          margin: var(--space-5) 0 var(--space-5);
+        }
+
+        .landing-quote__text {
+          max-width: 34rem;
+          color: rgba(248, 242, 234, 0.74);
+          font-size: 1.05rem;
+          line-height: 1.75;
+        }
+
+        .landing-quote__metrics {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: var(--space-4);
+          margin-top: var(--space-8);
+        }
+
+        .landing-quote__metrics div {
+          padding-top: var(--space-4);
+          border-top: 1px solid rgba(255, 255, 255, 0.12);
+          display: grid;
+          gap: 6px;
+        }
+
+        .landing-quote__metrics strong {
+          font-family: var(--font-ui);
+          font-size: 0.88rem;
+          font-weight: 600;
+        }
+
+        .landing-quote__metrics span {
+          color: rgba(248, 242, 234, 0.68);
+          font-size: 0.88rem;
+        }
+
+        .landing-quote__image-frame {
+          aspect-ratio: 4 / 5;
+        }
+
+        .landing-proof {
+          padding: 34px 0;
+          border-bottom: var(--border-subtle);
+          background: rgba(255, 253, 250, 0.78);
+        }
+
+        .landing-proof__row {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: var(--space-4);
+          align-items: center;
+        }
+
+        .landing-proof__item {
+          text-align: center;
+          font-family: var(--font-ui);
+          font-size: 0.88rem;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--color-text-secondary);
+        }
+
+        .landing-faq {
+          padding: var(--space-section) 0;
+        }
+
+        .landing-faq__grid {
+          display: grid;
+          grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+          gap: clamp(32px, 5vw, 72px);
+          align-items: start;
+        }
+
+        .landing-faq__title {
+          margin: var(--space-5) 0 var(--space-4);
+        }
+
+        .landing-faq__item {
+          border-bottom: var(--border-subtle);
+        }
+
+        .landing-faq__trigger {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: var(--space-4);
+          padding: 24px 0;
+          text-align: left;
+          color: var(--color-text);
+          font-family: var(--font-ui);
+          font-size: 1rem;
+          font-weight: 600;
+          transition: color var(--motion-base) var(--ease-standard);
+        }
+
+        .landing-faq__trigger:hover {
+          color: var(--color-brand-600);
+        }
+
+        .landing-faq__icon {
+          font-size: 1.5rem;
+          font-weight: 300;
+          transition: transform var(--motion-base) var(--ease-standard);
+        }
+
+        .landing-faq__answer {
+          color: var(--color-text-muted);
+          padding: 0 0 24px;
+          line-height: 1.75;
+        }
+
+        .landing-cta {
+          padding: 0 0 var(--space-section);
+        }
+
+        .landing-cta__panel {
+          text-align: center;
+          padding: clamp(32px, 6vw, 72px);
+          background: linear-gradient(180deg, rgba(255, 253, 250, 0.86) 0%, rgba(248, 239, 228, 0.92) 100%);
+        }
+
+        .landing-cta__title {
+          font-size: clamp(2.8rem, 6vw, 4.6rem);
+          line-height: 0.96;
+          margin: var(--space-5) auto var(--space-4);
+          max-width: 12ch;
+        }
+
+        .landing-cta__text {
+          max-width: 34rem;
+          margin: 0 auto;
+        }
+
+        .landing-cta__actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-4);
+          justify-content: center;
+          margin-top: var(--space-8);
+        }
+
+        .landing-footer {
+          padding: var(--space-6);
+          text-align: center;
+          color: var(--color-text-secondary);
+          font-size: 0.85rem;
+          border-top: var(--border-subtle);
+        }
+
+        @media (max-width: 1023px) {
+          .landing-hero__grid,
+          .landing-quote,
+          .landing-faq__grid {
+            grid-template-columns: 1fr;
+          }
+
+          .landing-proof__row,
+          .landing-services {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
-        @media (max-width: 640px) {
-          #services, #benefits, #testimonials, #cta-final {
-            padding-top: 48px !important;
-            padding-bottom: 48px !important;
+
+        @media (max-width: 768px) {
+          .landing-burger {
+            display: inline-flex;
           }
-        }
-        @media (max-width: 380px) {
-          #navbar-cta-btn { padding: 8px 14px !important; font-size: 13px !important; }
-          #navbar-login-btn { display: none !important; }
+
+          .page-topbar__inner {
+            gap: var(--space-3);
+          }
+
+          .brand-mark__name {
+            font-size: 0.9rem;
+          }
+
+          .brand-mark__icon {
+            width: 34px;
+            height: 34px;
+          }
+
+          .landing-hero {
+            padding-top: var(--space-8);
+          }
+
+          .landing-hero__title,
+          .landing-cta__title {
+            max-width: none;
+          }
+
+          .landing-hero__image-frame {
+            min-height: auto;
+            aspect-ratio: 5 / 6;
+          }
+
+          .landing-hero__status {
+            left: 16px;
+            right: 16px;
+            bottom: 16px;
+            max-width: none;
+          }
+
+          .landing-hero__micro-pill {
+            top: 16px;
+            right: 16px;
+          }
+
+          .landing-marquee {
+            overflow-x: auto;
+          }
+
+          .landing-marquee__track {
+            min-width: max-content;
+            padding-left: 12px;
+            padding-right: 12px;
+          }
+
+          .landing-services,
+          .landing-proof__row {
+            grid-template-columns: 1fr;
+          }
+
+          .landing-proof__item {
+            text-align: left;
+          }
+
+          .landing-quote__metrics {
+            grid-template-columns: 1fr;
+          }
         }
       `}</style>
     </div>
