@@ -1,103 +1,37 @@
-﻿import { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthShell } from '../components/AuthShell';
-import registerImage from '../assets/images/mais-imagens-pet-shop/pexels-barczakshoots-7889819.jpg';
-import { api } from '../services/api';
+import { AuthLayout } from '../components/layout/AuthLayout';
+import { Button, Input, Icon } from '../components/ui';
+import { useAuth } from '../hooks/useAuth';
 import { getErrorMessage } from '../utils/errors';
 import { validateEmail, validatePassword } from '../utils/validation';
 
-function Spinner() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      aria-hidden="true"
-      style={{ animation: 'spin 0.7s linear infinite', flexShrink: 0 }}
-    >
-      <circle cx="9" cy="9" r="7" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2.5" />
-      <path d="M9 2a7 7 0 017 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </svg>
-  );
-}
-
-function Field({
-  id,
-  label,
-  type,
-  value,
-  onChange,
-  error,
-  placeholder,
-  required,
-  autoComplete,
-  hint,
-}: {
-  id: string;
-  label: string;
-  type: string;
-  value: string;
-  onChange: (v: string) => void;
-  error?: string;
-  placeholder?: string;
-  required?: boolean;
-  autoComplete?: string;
-  hint?: string;
-}) {
-  return (
-    <div className="field" style={{ marginBottom: 'var(--space-5)' }}>
-      <label className="field-label" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        required={required}
-        autoComplete={autoComplete}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-        className={`field-input${error ? ' is-error' : ''}`}
-      />
-      {hint && !error && (
-        <span id={`${id}-hint`} className="field-helper">
-          {hint}
-        </span>
-      )}
-      {error && (
-        <span id={`${id}-error`} role="alert" className="field-helper is-error">
-          {error}
-        </span>
-      )}
-    </div>
-  );
-}
-
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { register } = useAuth();
+  
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setSuccess(null);
     setFieldErrors({});
     setIsLoading(true);
 
     const emailError = validateEmail(email);
     const passwordError = validatePassword(password);
+    const nameError = name.trim().length < 3 ? 'Nome deve ter no mínimo 3 caracteres' : undefined;
 
-    if (emailError || passwordError) {
+    if (emailError || passwordError || nameError) {
       setFieldErrors({
+        ...(nameError && { name: nameError }),
         ...(emailError && { email: emailError }),
         ...(passwordError && { password: passwordError }),
       });
@@ -106,9 +40,8 @@ export default function RegisterPage() {
     }
 
     try {
-      await api.post('/api/auth/register', { email, password });
-      setSuccess('Conta criada com sucesso. Você já será levado para o login.');
-      setTimeout(() => navigate('/login'), 1400);
+      await register(name, email, password);
+      navigate('/dashboard');
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -117,103 +50,107 @@ export default function RegisterPage() {
   };
 
   return (
-    <AuthShell
-      badgeText="Primeiro acesso"
-      title={
-        <>
-          Crie sua conta.
-          <br />
-          Reserve com elegância.
-        </>
-      }
-      subtitle="Leva menos de um minuto para começar. Depois disso, seu próximo banho ou tosa fica sempre a poucos toques."
-      visualLabel="Chegada suave"
-      visualTitle={
-        <>
-          Menos correria,
-          <br />
-          mais cuidado real.
-        </>
-      }
-      visualCopy="Um cadastro simples abre espaço para uma rotina organizada, com lembranças, horários e acolhimento desde o primeiro clique."
-      imageSrc={registerImage}
-      imageAlt="Pet em cena afetiva pronto para receber cuidados"
-      floatingTitle="Conta em preparação"
-      floatingText="Seus próximos agendamentos ficam centralizados, claros e sempre acessíveis."
-      footer={
-        <p style={{ fontSize: 14, color: 'var(--color-text-muted)', textAlign: 'center' }}>
-          Já tem conta?{' '}
-          <Link to="/login" style={{ color: 'var(--color-brand-600)', fontWeight: 600 }}>
-            Entrar
+    <AuthLayout>
+      <div className="flex flex-col gap-8 w-full">
+        <div>
+          <Link to="/" className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-6 transition-colors">
+            <Icon name="ArrowLeft" size={16} />
+            <span className="text-sm font-semibold">Voltar para home</span>
+          </Link>
+          <h1 className="font-display text-3xl font-bold text-ink mb-2">Criar conta</h1>
+          <p className="text-ink-muted">Inicie o ritual de cuidado do seu pet.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="register-name" className="text-sm font-semibold text-ink">Nome completo</label>
+            <Input
+              id="register-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Como prefere ser chamado"
+              error={!!fieldErrors.name}
+              leftIcon={<Icon name="User" size={18} />}
+              required
+              autoComplete="name"
+            />
+            {fieldErrors.name && (
+              <span className="text-xs font-semibold text-danger mt-1 flex items-center gap-1">
+                <Icon name="CircleAlert" size={12} /> {fieldErrors.name}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="register-email" className="text-sm font-semibold text-ink">E-mail</label>
+            <Input
+              id="register-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="seu@email.com"
+              error={!!fieldErrors.email}
+              leftIcon={<Icon name="Mail" size={18} />}
+              required
+              autoComplete="email"
+            />
+            {fieldErrors.email && (
+              <span className="text-xs font-semibold text-danger mt-1 flex items-center gap-1">
+                <Icon name="CircleAlert" size={12} /> {fieldErrors.email}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="register-password" className="text-sm font-semibold text-ink">Senha</label>
+            <Input
+              id="register-password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mínimo 8 caracteres"
+              error={!!fieldErrors.password}
+              leftIcon={<Icon name="Lock" size={18} />}
+              rightIcon={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="p-1 text-ink-muted hover:text-ink focus:outline-none focus-visible:shadow-focus rounded"
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                >
+                  <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
+                </button>
+              }
+              required
+              autoComplete="new-password"
+            />
+            {fieldErrors.password && (
+              <span className="text-xs font-semibold text-danger mt-1 flex items-center gap-1">
+                <Icon name="CircleAlert" size={12} /> {fieldErrors.password}
+              </span>
+            )}
+          </div>
+
+          {error && (
+            <div className="bg-danger-soft border border-danger/20 text-danger px-4 py-3 rounded-lg text-sm font-semibold flex items-start gap-3 mt-2" role="alert">
+              <Icon name="TriangleAlert" size={18} className="shrink-0 mt-0.5" />
+              {error}
+            </div>
+          )}
+
+          <Button type="submit" isLoading={isLoading} className="w-full mt-2" size="lg">
+            Finalizar cadastro
+          </Button>
+        </form>
+
+        <p className="text-center text-sm text-ink-muted mt-4">
+          Já possui conta?{' '}
+          <Link to="/login" className="font-semibold text-brand-600 hover:text-brand-700 transition-colors">
+            Fazer login
           </Link>
         </p>
-      }
-    >
-      <form onSubmit={handleSubmit} noValidate>
-        <Field
-          id="register-email"
-          label="E-mail"
-          type="email"
-          value={email}
-          onChange={setEmail}
-          error={fieldErrors.email}
-          placeholder="seu@email.com"
-          required
-          autoComplete="email"
-        />
-        <Field
-          id="register-password"
-          label="Senha"
-          type="password"
-          value={password}
-          onChange={setPassword}
-          error={fieldErrors.password}
-          placeholder="Mínimo 6 caracteres"
-          required
-          autoComplete="new-password"
-          hint="Use uma senha com pelo menos 6 caracteres para proteger seus dados."
-        />
-
-        {error && (
-          <div className="banner banner-error" role="alert" style={{ marginBottom: 'var(--space-5)' }}>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-              <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
-              <path d="M9 5.5v4M9 11.5h.01" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-            {error}
-          </div>
-        )}
-
-        {success && (
-          <div className="banner banner-success" role="status" style={{ marginBottom: 'var(--space-5)' }}>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-              <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
-              <path d="M5.5 9l2.5 2.5 4.5-4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            {success}
-          </div>
-        )}
-
-        <button
-          id="register-submit-btn"
-          type="submit"
-          disabled={isLoading || !!success}
-          className="btn btn-primary"
-          style={{ width: '100%', marginTop: 'var(--space-2)', justifyContent: 'center' }}
-          aria-busy={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <Spinner />
-              Criando conta...
-            </>
-          ) : success ? (
-            'Conta criada ✓'
-          ) : (
-            'Criar conta'
-          )}
-        </button>
-      </form>
-    </AuthShell>
+      </div>
+    </AuthLayout>
   );
 }

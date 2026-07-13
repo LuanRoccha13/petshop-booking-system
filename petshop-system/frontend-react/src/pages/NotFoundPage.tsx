@@ -1,4 +1,4 @@
-Ôªøimport { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import dogLogoSvg from '../assets/images/landing/dog-sleeping-svgrepo-com.svg';
 import notFoundImage from '../assets/images/mais-imagens-pet-shop/hayffield-l-ZVdZw2p08y4-unsplash.jpg';
 
@@ -13,7 +13,7 @@ export default function NotFoundPage() {
         }}
       >
         <div className="page-topbar__inner">
-          <Link to="/" className="brand-mark" aria-label="Voltar para a p√°gina inicial do PetShop B&T">
+          <Link to="/" className="brand-mark" aria-label="Voltar para a p·gina inicial do PetShop B&T">
             <span className="brand-mark__icon">
               <img
                 src={dogLogoSvg}
@@ -27,7 +27,7 @@ export default function NotFoundPage() {
             </span>
           </Link>
           <Link to="/" className="btn btn-ghost hide-mobile">
-            Voltar ao in√≠cio
+            Voltar ao inÌcio
           </Link>
         </div>
       </header>
@@ -35,7 +35,7 @@ export default function NotFoundPage() {
       <main className="editorial-shell notfound-shell">
         <div className="notfound-shell__grid">
           <section className="notfound-shell__copy">
-            <div className="editorial-kicker notfound-shell__badge">p√°gina n√£o encontrada</div>
+            <div className="editorial-kicker notfound-shell__badge">p·gina n„o encontrada</div>
             <div className="notfound-shell__code">404</div>
             <h1 className="display-title notfound-shell__title">
               Esse caminho saiu da rota.
@@ -43,11 +43,11 @@ export default function NotFoundPage() {
               O cuidado continua por aqui.
             </h1>
             <p className="body-lead notfound-shell__text">
-              A p√°gina que voc√™ tentou abrir n√£o existe mais. Mas o caminho para agendar o pr√≥ximo banho ou tosa continua simples e direto.
+              A p·gina que vocÍ tentou abrir n„o existe mais. Mas o caminho para agendar o prÛximo banho ou tosa continua simples e direto.
             </p>
             <div className="notfound-shell__actions">
               <Link to="/" className="btn btn-primary btn-lg">
-                Voltar ao in√≠cio
+                Voltar ao inÌcio
               </Link>
               <Link to="/login" className="btn btn-secondary btn-lg">
                 Ir para o login
@@ -62,7 +62,7 @@ export default function NotFoundPage() {
                 <span className="floating-pill__dot" />
                 <div>
                   <div className="notfound-shell__floating-title">Rota segura</div>
-                  <div className="notfound-shell__floating-text">Use os bot√µes ao lado para voltar ao fluxo principal.</div>
+                  <div className="notfound-shell__floating-text">Use os botıes ao lado para voltar ao fluxo principal.</div>
                 </div>
               </div>
             </div>

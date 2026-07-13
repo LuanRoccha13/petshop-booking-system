@@ -1,80 +1,20 @@
-﻿import { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthShell } from '../components/AuthShell';
-import heroImage from '../assets/images/mais-imagens-pet-shop/reba-spike-PEQIIwnIGdo-unsplash.jpg';
+import { AuthLayout } from '../components/layout/AuthLayout';
+import { Button, Input, Checkbox, Icon } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
 import { getErrorMessage } from '../utils/errors';
 import { validateEmail, validatePassword } from '../utils/validation';
 
-function Spinner() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      aria-hidden="true"
-      style={{ animation: 'spin 0.7s linear infinite', flexShrink: 0 }}
-    >
-      <circle cx="9" cy="9" r="7" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2.5" />
-      <path d="M9 2a7 7 0 017 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </svg>
-  );
-}
-
-function Field({
-  id,
-  label,
-  type,
-  value,
-  onChange,
-  error,
-  placeholder,
-  required,
-  autoComplete,
-}: {
-  id: string;
-  label: string;
-  type: string;
-  value: string;
-  onChange: (v: string) => void;
-  error?: string;
-  placeholder?: string;
-  required?: boolean;
-  autoComplete?: string;
-}) {
-  return (
-    <div className="field" style={{ marginBottom: 'var(--space-5)' }}>
-      <label className="field-label" htmlFor={id}>
-        {label}
-      </label>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        required={required}
-        autoComplete={autoComplete}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${id}-error` : undefined}
-        className={`field-input${error ? ' is-error' : ''}`}
-      />
-      {error && (
-        <span id={`${id}-error`} role="alert" className="field-helper is-error">
-          {error}
-        </span>
-      )}
-    </div>
-  );
-}
-
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -108,90 +48,103 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthShell
-      badgeText="Área do cliente"
-      title={
-        <>
-          Entre com calma.
-          <br />
-          Seu ritual já começou.
-        </>
-      }
-      subtitle="Acompanhe confirmações, horários e recados do atendimento em um painel limpo, rápido e acolhedor."
-      visualLabel="Retorno tranquilo"
-      visualTitle={
-        <>
-          Cada visita merece
-          <br />
-          a mesma delicadeza.
-        </>
-      }
-      visualCopy="Do login ao check-in, a experiência foi desenhada para parecer premium sem deixar de ser humana."
-      imageSrc={heroImage}
-      imageAlt="Cachorro em retrato calmo olhando para a câmera"
-      floatingTitle="Agenda confirmada"
-      floatingText="Acesse horários, lembretes e cuidados do seu pet em poucos segundos."
-      footer={
-        <p style={{ fontSize: 14, color: 'var(--color-text-muted)', textAlign: 'center' }}>
-          Não tem conta?{' '}
-          <Link to="/register" style={{ color: 'var(--color-brand-600)', fontWeight: 600 }}>
+    <AuthLayout>
+      <div className="flex flex-col gap-8 w-full">
+        <div>
+          <Link to="/" className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-6 transition-colors">
+            <Icon name="ArrowLeft" size={16} />
+            <span className="text-sm font-semibold">Voltar para home</span>
+          </Link>
+          <h1 className="font-display text-3xl font-bold text-ink mb-2">Entrar</h1>
+          <p className="text-ink-muted">Acompanhe seu pet no painel B&T.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="login-email" className="text-sm font-semibold text-ink">E-mail</label>
+            <Input
+              id="login-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="seu@email.com"
+              error={!!fieldErrors.email}
+              leftIcon={<Icon name="Mail" size={18} />}
+              required
+              autoComplete="email"
+            />
+            {fieldErrors.email && (
+              <span className="text-xs font-semibold text-danger mt-1 flex items-center gap-1">
+                <Icon name="CircleAlert" size={12} /> {fieldErrors.email}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <label htmlFor="login-password" className="text-sm font-semibold text-ink">Senha</label>
+              <Link to="/forgot-password" className="text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors">
+                Esqueceu a senha?
+              </Link>
+            </div>
+            <Input
+              id="login-password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              error={!!fieldErrors.password}
+              leftIcon={<Icon name="Lock" size={18} />}
+              rightIcon={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="p-1 text-ink-muted hover:text-ink focus:outline-none focus-visible:shadow-focus rounded"
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                >
+                  <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
+                </button>
+              }
+              required
+              autoComplete="current-password"
+            />
+            {fieldErrors.password && (
+              <span className="text-xs font-semibold text-danger mt-1 flex items-center gap-1">
+                <Icon name="CircleAlert" size={12} /> {fieldErrors.password}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 mt-1">
+            <Checkbox
+              id="remember-me"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            <label htmlFor="remember-me" className="text-sm text-ink-muted cursor-pointer select-none">
+              Lembrar-me neste dispositivo
+            </label>
+          </div>
+
+          {error && (
+            <div className="bg-danger-soft border border-danger/20 text-danger px-4 py-3 rounded-lg text-sm font-semibold flex items-start gap-3 mt-2" role="alert">
+              <Icon name="TriangleAlert" size={18} className="shrink-0 mt-0.5" />
+              {error}
+            </div>
+          )}
+
+          <Button type="submit" isLoading={isLoading} className="w-full mt-2" size="lg">
+            Entrar agora
+          </Button>
+        </form>
+
+        <p className="text-center text-sm text-ink-muted mt-4">
+          Ainda não tem conta?{' '}
+          <Link to="/register" className="font-semibold text-brand-600 hover:text-brand-700 transition-colors">
             Criar conta grátis
           </Link>
         </p>
-      }
-    >
-      <form onSubmit={handleSubmit} noValidate>
-        <Field
-          id="login-email"
-          label="E-mail"
-          type="email"
-          value={email}
-          onChange={setEmail}
-          error={fieldErrors.email}
-          placeholder="seu@email.com"
-          required
-          autoComplete="email"
-        />
-        <Field
-          id="login-password"
-          label="Senha"
-          type="password"
-          value={password}
-          onChange={setPassword}
-          error={fieldErrors.password}
-          placeholder="••••••••"
-          required
-          autoComplete="current-password"
-        />
-
-        {error && (
-          <div className="banner banner-error" role="alert" style={{ marginBottom: 'var(--space-5)' }}>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
-              <circle cx="9" cy="9" r="8" stroke="currentColor" strokeWidth="1.5" opacity="0.5" />
-              <path d="M9 5.5v4M9 11.5h.01" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-            {error}
-          </div>
-        )}
-
-        <button
-          id="login-submit-btn"
-          type="submit"
-          disabled={isLoading}
-          className="btn btn-primary"
-          style={{ width: '100%', marginTop: 'var(--space-2)', justifyContent: 'center' }}
-          aria-busy={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <Spinner />
-              Entrando...
-            </>
-          ) : (
-            'Entrar agora'
-          )}
-        </button>
-      </form>
-    </AuthShell>
+      </div>
+    </AuthLayout>
   );
 }

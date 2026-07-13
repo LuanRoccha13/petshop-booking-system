@@ -8,6 +8,7 @@ interface AuthContextValue {
   email: string | null;
   expiresAt: number | null;
   login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   refreshAccessToken: () => Promise<void>;
 }
@@ -50,6 +51,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     const response = await api.post<AuthResponse>('/api/auth/login', { email, password });
+    const data = response.data;
+    setToken(data.token);
+    setRefreshToken(data.refreshToken);
+    setEmail(data.email);
+    setExpiresAt(data.expiresAt);
+    api.defaults.headers.common.Authorization = `Bearer ${data.token}`;
+  }, []);
+
+  const register = useCallback(async (name: string, email: string, password: string) => {
+    const response = await api.post<AuthResponse>('/api/auth/register', { name, email, password });
     const data = response.data;
     setToken(data.token);
     setRefreshToken(data.refreshToken);
@@ -108,8 +119,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [expiresAt, refreshAccessToken, logout]);
 
   const value = useMemo(
-    () => ({ token, refreshToken, email, expiresAt, login, logout, refreshAccessToken }),
-    [token, refreshToken, email, expiresAt, login, logout, refreshAccessToken],
+    () => ({ token, refreshToken, email, expiresAt, login, register, logout, refreshAccessToken }),
+    [token, refreshToken, email, expiresAt, login, register, logout, refreshAccessToken],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
