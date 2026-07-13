@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '../../utils/cn';
+import logoImage from '../../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_zdm5p4zdm5p4zdm5-Photoroom.png';
 
 export interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'monochrome' | 'white';
@@ -24,47 +25,11 @@ export function Logo({ variant = 'default', showText = true, size = 'md', classN
 
   return (
     <div className={cn('flex items-center gap-3', className)} {...props}>
-      <svg
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className={cn(sizes[size], 'w-auto shrink-0')}
-      >
-        {/* Continuous line art approximating the dog & hand */}
-        <path
-          d="M 50 90 
-             C 20 90 10 70 10 50 
-             C 10 30 25 20 40 10 
-             C 50 20 50 40 40 50 
-             C 30 60 30 70 40 80
-             C 60 80 80 60 80 50
-             C 80 35 70 25 60 20
-             C 70 25 80 30 90 40"
-          stroke={isWhite ? 'currentColor' : 'var(--brand-500, #eb6a2c)'}
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={cn('transition-colors', variant === 'monochrome' && 'stroke-ink')}
-        />
-        {/* Dog Ear */}
-        <path
-          d="M 40 10 C 25 20 20 40 35 45 C 45 40 50 20 40 10 Z"
-          stroke={isWhite ? 'currentColor' : 'var(--brand-500, #eb6a2c)'}
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={cn('transition-colors', variant === 'monochrome' && 'stroke-ink')}
-        />
-        {/* Hand contour inner */}
-        <path
-          d="M 15 55 C 30 75 55 80 75 60"
-          stroke={isWhite ? 'currentColor' : 'var(--brand-500, #eb6a2c)'}
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={cn('transition-colors', variant === 'monochrome' && 'stroke-ink')}
-        />
-      </svg>
+      <img
+        src={logoImage}
+        alt="PURA Logo"
+        className={cn(sizes[size], 'w-auto shrink-0 object-contain', isWhite && 'brightness-0 invert')}
+      />
       
       {showText && (
         <div className="flex flex-col justify-center">
