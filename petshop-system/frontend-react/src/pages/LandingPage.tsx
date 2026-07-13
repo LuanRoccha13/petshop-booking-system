@@ -49,6 +49,26 @@ const faqs = [
   },
 ];
 
+/** Single pill inside the marquee band */
+function MarqueeItem({ icon, label }: { icon: string; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-2.5 px-7 shrink-0 select-none">
+      <Icon
+        name={icon as never}
+        size={14}
+        className="text-brand-500 shrink-0 opacity-80"
+      />
+      <span
+        className="font-ui text-[0.78rem] font-semibold tracking-[0.08em] uppercase text-ink/50 whitespace-nowrap"
+      >
+        {label}
+      </span>
+      {/* Dot separator */}
+      <span className="ml-5 w-[3px] h-[3px] rounded-full bg-ink/15 shrink-0" />
+    </span>
+  );
+}
+
 export default function LandingPage() {
   const navigate = useNavigate();
 
@@ -136,6 +156,63 @@ export default function LandingPage() {
           <p className="text-xs text-ink-muted leading-relaxed ml-5">Hoje, 14h • chegada calma, saída impecável.</p>
         </motion.div>
       </section>
+
+      {/* ─────────────────────────────────────────────────────────────────
+          MARQUEE TRANSITION BAND
+          Overlaps the Hero bottom via -mt-px, creating visual continuity.
+          Pure CSS animation — no JS timers, no rAF, no Intersection Observer.
+          Content is aria-hidden: it is purely decorative.
+      ───────────────────────────────────────────────────────────────── */}
+      <div
+        aria-hidden="true"
+        className="relative z-20 -mt-px overflow-hidden border-y border-dark-border/8"
+        style={{
+          background: 'rgba(245, 239, 230, 0.72)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 8px 32px rgba(33,24,17,0.06), inset 0 1px 0 rgba(255,255,255,0.6)',
+        }}
+      >
+        {/* Left / right edge fades — mask the loop seam */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
+          style={{ background: 'linear-gradient(to right, rgba(245,239,230,0.9), transparent)' }} />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
+          style={{ background: 'linear-gradient(to left, rgba(245,239,230,0.9), transparent)' }} />
+
+        {/* The track — items duplicated for seamless loop; CSS moves it -50% */}
+        <div className="marquee-track py-0" style={{ height: '72px', alignItems: 'center' }}>
+          {/* Set A */}
+          {[
+            { icon: 'Sparkles',      label: 'Premium Grooming'       },
+            { icon: 'Stethoscope',   label: 'Veterinary Care'        },
+            { icon: 'Bath',          label: 'Spa & Relaxation'       },
+            { icon: 'CalendarCheck', label: 'Digital Booking'        },
+            { icon: 'Activity',      label: 'Live Updates'           },
+            { icon: 'HeartPulse',    label: 'Health Tracking'        },
+            { icon: 'BadgeCheck',    label: 'Certified Specialists'  },
+            { icon: 'Truck',         label: 'Pickup & Delivery'      },
+            { icon: 'Star',          label: '4.9★ Customer Rating'   },
+            { icon: 'PawPrint',      label: '+5,000 Happy Pets'      },
+          ].map(({ icon, label }) => (
+            <MarqueeItem key={`a-${label}`} icon={icon} label={label} />
+          ))}
+          {/* Set B — exact duplicate for seamless CSS loop */}
+          {[
+            { icon: 'Sparkles',      label: 'Premium Grooming'       },
+            { icon: 'Stethoscope',   label: 'Veterinary Care'        },
+            { icon: 'Bath',          label: 'Spa & Relaxation'       },
+            { icon: 'CalendarCheck', label: 'Digital Booking'        },
+            { icon: 'Activity',      label: 'Live Updates'           },
+            { icon: 'HeartPulse',    label: 'Health Tracking'        },
+            { icon: 'BadgeCheck',    label: 'Certified Specialists'  },
+            { icon: 'Truck',         label: 'Pickup & Delivery'      },
+            { icon: 'Star',          label: '4.9★ Customer Rating'   },
+            { icon: 'PawPrint',      label: '+5,000 Happy Pets'      },
+          ].map(({ icon, label }) => (
+            <MarqueeItem key={`b-${label}`} icon={icon} label={label} />
+          ))}
+        </div>
+      </div>
 
       {/* Services Section */}
       <Section animateOnScroll className="bg-surface-soft py-24">
