@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { DobermanEnergySystem } from '../components/effects/DobermanEnergySystem';
 import { LandingLayout } from '../components/layout/LandingLayout';
 import { Section } from '../components/layout/Section';
 import { ContentArea } from '../components/layout/ContentArea';
@@ -8,25 +10,34 @@ import { PREMIUM_TRANSITIONS } from '../design-tokens/motion';
 
 import heroImage from '../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_f40r03f40r03f40r-Photoroom.png';
 import quoteImage from '../assets/images/mais-imagens-pet-shop/download (1)-Photoroom (1).png';
-import serviceImageOne from '../assets/images/mais-imagens-pet-shop/pexels-goochie-poochie-19145890.jpg';
+import serviceImageOne from '../assets/images/mais-imagens-pet-shop/buddy-an-LpK2xddrElI-unsplash.jpg';
 import serviceImageTwo from '../assets/images/mais-imagens-pet-shop/pexels-gustavo-fring-6816860.jpg';
-import serviceImageThree from '../assets/images/mais-imagens-pet-shop/buddy-an-LpK2xddrElI-unsplash.jpg';
+import serviceImageThree from '../assets/images/mais-imagens-pet-shop/pexels-goochie-poochie-19145890.jpg';
+
+// Service card videos — preloaded as module assets (Vite handles the URL)
+import videoOne   from '../assets/images/mais-imagens-pet-shop/video_card_1.mp4';
+import videoTwo   from '../assets/images/mais-imagens-pet-shop/video_card_2.mp4';
+import videoThree from '../assets/images/mais-imagens-pet-shop/video_card_3.mp4';
+import { InteractiveVideoCard } from '../components/ui/InteractiveVideoCard';
 
 const serviceCards = [
   {
     title: 'Banho com acabamento leve',
     text: 'Limpeza, hidratação e secagem pensadas para deixar o pelo bonito sem estressar o pet.',
     image: serviceImageOne,
+    video: videoOne,
   },
   {
     title: 'Tosa com leitura de temperamento',
     text: 'Cada detalhe do corte respeita raça, conforto e o ritmo natural do atendimento.',
     image: serviceImageTwo,
+    video: videoTwo,
   },
   {
     title: 'Rotina que continua no digital',
     text: 'Agende, confirme e acompanhe tudo em um fluxo claro, sem ligações ou esperas longas.',
     image: serviceImageThree,
+    video: videoThree,
   },
 ];
 
@@ -71,6 +82,7 @@ function MarqueeItem({ icon, label }: { icon: string; label: string }) {
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const heroRef = useRef<HTMLElement>(null);
 
   return (
     <LandingLayout>
@@ -81,9 +93,9 @@ export default function LandingPage() {
           Image is position:absolute anchored to bottom-right, height-driven.
           Text is normal flow with z-10. Exactly how Apple/Stripe do it.
       ───────────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-bg" style={{ minHeight: 'min(90vh, 840px)' }}>
+      <section ref={heroRef} className="relative overflow-hidden bg-bg" style={{ minHeight: 'min(90vh, 840px)' }}>
 
-        {/* Dog — absolutely anchored to bottom-right, fills ~80% of section height */}
+        {/* Dog — absolutely anchored to bottom-right, fills ~90% of section height */}
         <motion.img
           src={heroImage}
           alt=""
@@ -93,6 +105,9 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
         />
+
+        {/* Energy system — SVG overlay, exactly mirrors the PNG positioning */}
+        <DobermanEnergySystem containerRef={heroRef} />
 
         {/* Content — sits in normal flow, z-10 so it's above the image */}
         <ContentArea className="relative z-10 h-full flex items-center">
@@ -223,15 +238,13 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {serviceCards.map((card, idx) => (
-              <Card key={idx} interactive className="p-0 overflow-hidden flex flex-col group border-none shadow-md">
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img src={card.image} alt={card.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-                <div className="p-6 flex-1 flex flex-col">
-                  <Card.Title className="text-2xl mb-3">{card.title}</Card.Title>
-                  <Card.Description>{card.text}</Card.Description>
-                </div>
-              </Card>
+              <InteractiveVideoCard
+                key={idx}
+                poster={card.image}
+                video={card.video}
+                title={card.title}
+                description={card.text}
+              />
             ))}
           </div>
         </ContentArea>
