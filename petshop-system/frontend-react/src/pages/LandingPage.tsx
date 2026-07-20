@@ -1,15 +1,17 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { DobermanEnergySystem } from '../components/effects/DobermanEnergySystem';
+import { ScrollScrubVideo } from '../components/effects/ScrollScrubVideo';
 import { LandingLayout } from '../components/layout/LandingLayout';
 import { Section } from '../components/layout/Section';
 import { ContentArea } from '../components/layout/ContentArea';
 import { Button, Card, Badge, Accordion, Icon } from '../components/ui';
 import { PREMIUM_TRANSITIONS } from '../design-tokens/motion';
+import { useRevealMask } from '../hooks/useRevealMask';
 
 import heroImage from '../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_f40r03f40r03f40r-Photoroom.png';
 import quoteImage from '../assets/images/mais-imagens-pet-shop/download (1)-Photoroom (1).png';
+import quoteIllustrationImage from '../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_9hynhg9hynhg9hyn-Photoroom.png';
 import serviceImageOne from '../assets/images/mais-imagens-pet-shop/buddy-an-LpK2xddrElI-unsplash.jpg';
 import serviceImageTwo from '../assets/images/mais-imagens-pet-shop/pexels-gustavo-fring-6816860.jpg';
 import serviceImageThree from '../assets/images/mais-imagens-pet-shop/pexels-goochie-poochie-19145890.jpg';
@@ -82,7 +84,17 @@ function MarqueeItem({ icon, label }: { icon: string; label: string }) {
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const heroRef = useRef<HTMLElement>(null);
+  const heroRef                = useRef<HTMLElement>(null);
+  const quoteSectionRef        = useRef<HTMLElement>(null);
+  const quoteIllustrationRef   = useRef<HTMLImageElement>(null);
+
+  // Reveal-mask effect: cursor unveils Arcane illustration over the photo
+  useRevealMask(quoteIllustrationRef, quoteSectionRef, {
+    outerRadius:  140,
+    innerRatio:   0.42,
+    cursorAlpha:  0.11,
+    radiusAlpha:  0.13,
+  });
 
   return (
     <LandingLayout>
@@ -95,7 +107,7 @@ export default function LandingPage() {
       ───────────────────────────────────────────────────────────────── */}
       <section ref={heroRef} className="relative overflow-hidden bg-bg" style={{ minHeight: 'min(90vh, 840px)' }}>
 
-        {/* Dog — absolutely anchored to bottom-right, fills ~90% of section height */}
+        {/* Hero image — static for now, replace src with heroVideo once Dobermann-hero.mp4 is in assets */}
         <motion.img
           src={heroImage}
           alt=""
@@ -105,9 +117,6 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
         />
-
-        {/* Energy system — SVG overlay, exactly mirrors the PNG positioning */}
-        <DobermanEnergySystem containerRef={heroRef} />
 
         {/* Content — sits in normal flow, z-10 so it's above the image */}
         <ContentArea className="relative z-10 h-full flex items-center">
@@ -252,33 +261,55 @@ export default function LandingPage() {
 
       {/* ─────────────────────────────────────────────────────────────────
           QUOTE SECTION
-          Same technique as Hero. Section is relative overflow:hidden.
-          Dog image absolutely anchored to bottom-right.
-          Text content in normal flow on the left, z-10.
+          Section height increased ~18% (min(80vh,720px) → min(95vh,840px)).
+          Two images stacked at identical absolute position:
+            — quoteImage (photo)           → always visible, base layer
+            — quoteIllustrationImage (art) → hidden by CSS mask, revealed on hover
+          Mouse events on the section translate to mask coords via img.getBoundingClientRect().
       ───────────────────────────────────────────────────────────────── */}
       <section
+        ref={quoteSectionRef}
         className="relative overflow-hidden bg-ink text-white"
-        style={{ minHeight: 'min(80vh, 720px)' }}
+        style={{ minHeight: 'min(96vh, 980px)' }}
       >
 
-        {/* Dog — anchored to bottom-right, same height discipline as Hero */}
+        {/* Base photo — always visible */}
         <img
           src={quoteImage}
           alt=""
           aria-hidden="true"
-          className="absolute bottom-0 right-0 h-[100%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
+          className="absolute bottom-0 -right-[130px] lg:-right-[160px] h-[100%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
+          style={{ zIndex: 1 }}
         />
 
-        {/* Subtle gradient so text stays readable when dog overlaps */}
-        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-transparent pointer-events-none z-[1]" />
+        {/* Illustration (Arcane style) — hidden by CSS radial-gradient mask.
+            The mask is written by useRevealMask entirely via DOM refs.
+            Initial opacity:0 prevents flash before the rAF loop takes over.
+            Both images must have identical sizing classes so pixels align. */}
+        <img
+          ref={quoteIllustrationRef}
+          src={quoteIllustrationImage}
+          alt=""
+          aria-hidden="true"
+          className="absolute bottom-0 -right-[130px] lg:-right-[160px] h-[100%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
+          style={{
+            zIndex:            2,
+            opacity:           0,
+            maskImage:         'none',
+            WebkitMaskImage:   'none',
+          }}
+        />
 
-        {/* Content — z-10 */}
-        <ContentArea className="relative z-10 h-full flex items-end">
-          <div className="flex flex-col items-start gap-6 py-24 lg:py-32 max-w-[520px]">
+        {/* Left-to-right gradient: ensures text stays readable over the image */}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-transparent pointer-events-none" style={{ zIndex: 3 }} />
+
+        {/* Content — z-10 (above gradient, above images) */}
+        <ContentArea className="relative h-full flex items-end" style={{ zIndex: 10 }}>
+          <div className="flex flex-col items-start gap-8 py-32 lg:py-40 max-w-[520px]">
             <Badge variant="outline" className="text-white/60 border-white/20">A FILOSOFIA DO CUIDADO</Badge>
             <h2 className="font-display text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
               A beleza vem depois.<br />
-              <span className="text-brand-500">A confiança vem primeiro.</span>
+              <span className="text-brand-500">A confiânça vem primeiro.</span>
             </h2>
             <p className="text-lg text-white/70 leading-relaxed">
               Quando o atendimento é previsível, gentil e bem executado, o resultado aparece no pelo, no olhar e na tranquilidade de quem deixa o pet com a gente.
