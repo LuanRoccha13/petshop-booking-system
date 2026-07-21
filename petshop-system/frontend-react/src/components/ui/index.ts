@@ -7,6 +7,9 @@ export * from './Checkbox';
 export * from './Dropdown';
 export * from './Icon';
 export * from './Input';
+export * from './InteractiveVideoCard';
+export * from './Timeline';
+export * from './TestimonialCarousel';
 export * from './Modal'; // also exports Dialog
 export * from './Radio';
 export * from './Select';

@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ScrollScrubVideo } from '../components/effects/ScrollScrubVideo';
 import { LandingLayout } from '../components/layout/LandingLayout';
 import { Section } from '../components/layout/Section';
 import { ContentArea } from '../components/layout/ContentArea';
-import { Button, Card, Badge, Accordion, Icon } from '../components/ui';
+import { Button, Card, Badge, Accordion, Icon, Timeline, TestimonialCarousel } from '../components/ui';
 import { PREMIUM_TRANSITIONS } from '../design-tokens/motion';
 import { useRevealMask } from '../hooks/useRevealMask';
 
@@ -62,6 +62,54 @@ const faqs = [
   },
 ];
 
+const timelineSteps = [
+  {
+    number: '01',
+    title: 'Agendar',
+    description: 'Escolha o melhor horário em poucos cliques. O ambiente digital é simples e transparente.',
+    isActive: true,
+  },
+  {
+    number: '02',
+    title: 'Recepção',
+    description: 'A chegada é tranquila, priorizando o conforto do pet antes do procedimento.',
+  },
+  {
+    number: '03',
+    title: 'Cuidado Completo',
+    description: 'Banho e tosa com respeito ao tempo e temperamento do seu melhor amigo.',
+  },
+  {
+    number: '04',
+    title: 'Retorno Feliz',
+    description: 'Saída impecável, sem stress, com notificação direta no seu celular.',
+  },
+];
+
+const testimonialsData = [
+  {
+    quote: "Não é apenas limpeza. É a sensação de que cada detalhe foi pensado para o conforto do meu cachorro.",
+    name: "Marina A.",
+    role: "Tutora do Max"
+  },
+  {
+    quote: "O agendamento digital me poupou muito tempo. E o cuidado na chegada fez toda a diferença.",
+    name: "Rafael N.",
+    role: "Tutor da Luna"
+  },
+  {
+    quote: "A elegância está no controle e no respeito. O resultado no pelo é incrível e meu gato volta relaxado.",
+    name: "Camila R.",
+    role: "Tutora do Simba"
+  },
+  {
+    quote: "Uma experiência premium de ponta a ponta. Fui informada sobre o status durante todo o procedimento.",
+    name: "João P.",
+    role: "Tutor do Duke"
+  }
+];
+
+
 /** Single pill inside the marquee band */
 function MarqueeItem({ icon, label }: { icon: string; label: string }) {
   return (
@@ -87,6 +135,16 @@ export default function LandingPage() {
   const heroRef                = useRef<HTMLElement>(null);
   const quoteSectionRef        = useRef<HTMLElement>(null);
   const quoteIllustrationRef   = useRef<HTMLImageElement>(null);
+
+  const { scrollYProgress: heroScroll } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+
+  const heroImageScale = useTransform(heroScroll, [0, 1], [1, 1.05]);
+  const heroImageY = useTransform(heroScroll, [0, 1], ["0%", "15%"]);
+  const heroTextOpacity = useTransform(heroScroll, [0, 0.6], [1, 0]);
+  const heroTextY = useTransform(heroScroll, [0, 1], ["0%", "20%"]);
 
   // Reveal-mask effect: cursor unveils Arcane illustration over the photo
   useRevealMask(quoteIllustrationRef, quoteSectionRef, {
@@ -115,12 +173,16 @@ export default function LandingPage() {
           className="absolute bottom-0 right-0 h-[90%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          style={{ scale: heroImageScale, y: heroImageY }}
         />
 
         {/* Content — sits in normal flow, z-10 so it's above the image */}
         <ContentArea className="relative z-10 h-full flex items-center">
-          <div className="flex flex-col items-start gap-7 py-28 lg:py-36 max-w-[520px]">
+          <motion.div 
+            className="flex flex-col items-start gap-7 py-28 lg:py-36 max-w-[520px]"
+            style={{ opacity: heroTextOpacity, y: heroTextY }}
+          >
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -163,22 +225,31 @@ export default function LandingPage() {
                 Ver a experiência
               </Button>
             </motion.div>
-          </div>
+          </motion.div>
         </ContentArea>
 
-        {/* Floating status pill — anchored visually to bottom-left of content area */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.55, ...PREMIUM_TRANSITIONS.springComfortable }}
-          className="absolute bottom-10 left-4 md:left-[calc((100vw-1240px)/2+2rem)] bg-surface/95 backdrop-blur-md p-4 rounded-xl shadow-elevation-2 border border-dark-border/10 max-w-[280px] z-20"
-        >
-          <div className="flex items-center gap-3 mb-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-success animate-pulse shrink-0" />
-            <span className="font-ui font-bold text-sm text-ink">Banho + hidratação confirmados</span>
-          </div>
-          <p className="text-xs text-ink-muted leading-relaxed ml-5">Hoje, 14h • chegada calma, saída impecável.</p>
-        </motion.div>
+        {/* Premium Indicators */}
+        <ContentArea className="absolute inset-x-0 bottom-8 z-20 pointer-events-none">
+          <motion.div 
+            className="grid gap-5 border-t border-ink/10 pt-5 sm:grid-cols-3 max-w-xl"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div>
+              <span className="block text-xl font-semibold text-ink">~2 min</span>
+              <span className="font-ui mt-1 block text-[10px] tracking-wider uppercase text-ink-muted">Agendamento rápido</span>
+            </div>
+            <div>
+              <span className="block text-xl font-semibold text-ink">360°</span>
+              <span className="font-ui mt-1 block text-[10px] tracking-wider uppercase text-ink-muted">Cuidado completo</span>
+            </div>
+            <div className="hidden sm:block">
+              <span className="block text-xl font-semibold text-ink">4.9★</span>
+              <span className="font-ui mt-1 block text-[10px] tracking-wider uppercase text-ink-muted">Avaliações positivas</span>
+            </div>
+          </motion.div>
+        </ContentArea>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────────
@@ -260,6 +331,30 @@ export default function LandingPage() {
       </Section>
 
       {/* ─────────────────────────────────────────────────────────────────
+          TIMELINE SECTION (Como Funciona)
+      ───────────────────────────────────────────────────────────────── */}
+      <Section className="py-24 bg-surface relative overflow-hidden">
+        <ContentArea>
+          <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr]">
+            <motion.div 
+              className="lg:sticky lg:top-32 lg:self-start"
+              initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              viewport={{ once: true, margin: '-10%' }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Badge variant="outline" className="mb-4 text-brand-600 border-brand-500/20 bg-brand-soft">COMO FUNCIONA</Badge>
+              <h2 className="font-display text-4xl lg:text-5xl font-bold text-ink mb-6">A qualidade nasce da disciplina.</h2>
+              <p className="text-lg text-ink-muted leading-relaxed">Uma progressão clara: agendar, acolher, cuidar e retornar.</p>
+            </motion.div>
+            <div>
+              <Timeline items={timelineSteps} />
+            </div>
+          </div>
+        </ContentArea>
+      </Section>
+
+      {/* ─────────────────────────────────────────────────────────────────
           QUOTE SECTION
           Section height increased ~18% (min(80vh,720px) → min(95vh,840px)).
           Two images stacked at identical absolute position:
@@ -272,6 +367,16 @@ export default function LandingPage() {
         className="relative overflow-hidden bg-ink text-white"
         style={{ minHeight: 'min(96vh, 980px)' }}
       >
+      
+        {/* Cinematic depth - ambient glow */}
+        <div 
+          className="absolute inset-0 bg-brand-500/15 mix-blend-color-dodge blur-[120px] rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none" 
+          style={{ zIndex: 1 }} 
+        />
+        <div 
+          className="absolute inset-0 bg-[#caff75]/10 mix-blend-color-dodge blur-[120px] rounded-full -translate-x-1/3 -translate-y-1/3 pointer-events-none" 
+          style={{ zIndex: 1 }} 
+        />
 
         {/* Base photo — always visible */}
         <img
@@ -317,6 +422,27 @@ export default function LandingPage() {
           </div>
         </ContentArea>
       </section>
+
+      {/* ─────────────────────────────────────────────────────────────────
+          TESTIMONIALS SECTION
+      ───────────────────────────────────────────────────────────────── */}
+      <Section className="py-24 border-y border-ink/10 bg-bg overflow-hidden relative">
+        <ContentArea>
+          <motion.div 
+            className="max-w-4xl mb-16"
+            initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
+            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-10%' }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Badge variant="outline" className="mb-4 text-brand-600 border-brand-500/20 bg-brand-soft">Perspectivas</Badge>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-ink mb-6">O impacto permanece depois do encontro.</h2>
+            <p className="text-lg text-ink-muted leading-relaxed">Relatos reais sobre uma presença que combina carinho, precisão e tranquilidade.</p>
+          </motion.div>
+          
+          <TestimonialCarousel testimonials={testimonialsData} />
+        </ContentArea>
+      </Section>
 
       {/* FAQ Section */}
       <Section animateOnScroll className="py-24">
