@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+﻿import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ScrollScrubVideo } from '../components/effects/ScrollScrubVideo';
@@ -10,11 +10,12 @@ import { PREMIUM_TRANSITIONS } from '../design-tokens/motion';
 import { useRevealMask } from '../hooks/useRevealMask';
 
 import heroImage from '../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_f40r03f40r03f40r-Photoroom.png';
+import heroIllustrationImage from '../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_ayha6jayha6jayha-Photoroom.png';
 import quoteImage from '../assets/images/mais-imagens-pet-shop/download (1)-Photoroom (1).png';
 import quoteIllustrationImage from '../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_9hynhg9hynhg9hyn-Photoroom.png';
-import serviceImageOne from '../assets/images/mais-imagens-pet-shop/buddy-an-LpK2xddrElI-unsplash.jpg';
-import serviceImageTwo from '../assets/images/mais-imagens-pet-shop/pexels-gustavo-fring-6816860.jpg';
-import serviceImageThree from '../assets/images/mais-imagens-pet-shop/pexels-goochie-poochie-19145890.jpg';
+import serviceImageOne from '../assets/images/mais-imagens-pet-shop/ChatGPT Image 21 de jul. de 2026, 16_56_10.png';
+import serviceImageTwo from '../assets/images/mais-imagens-pet-shop/21 de jul. de 2026, 17_02_04.png';
+import serviceImageThree from '../assets/images/mais-imagens-pet-shop/ChatGPT Image 21 de jul. de 2026, 17_05_59.png';
 
 // Service card videos — preloaded as module assets (Vite handles the URL)
 import videoOne   from '../assets/images/mais-imagens-pet-shop/video_card_1.mp4';
@@ -133,6 +134,7 @@ function MarqueeItem({ icon, label }: { icon: string; label: string }) {
 export default function LandingPage() {
   const navigate = useNavigate();
   const heroRef                = useRef<HTMLElement>(null);
+  const heroIllustrationRef    = useRef<HTMLImageElement>(null);
   const quoteSectionRef        = useRef<HTMLElement>(null);
   const quoteIllustrationRef   = useRef<HTMLImageElement>(null);
 
@@ -154,6 +156,14 @@ export default function LandingPage() {
     radiusAlpha:  0.13,
   });
 
+  // Reveal-mask effect for the Hero section
+  useRevealMask(heroIllustrationRef, heroRef, {
+    outerRadius:  200,
+    innerRatio:   0.42,
+    cursorAlpha:  0.11,
+    radiusAlpha:  0.13,
+  });
+
   return (
     <LandingLayout>
 
@@ -165,7 +175,7 @@ export default function LandingPage() {
       ───────────────────────────────────────────────────────────────── */}
       <section ref={heroRef} className="relative overflow-hidden bg-bg" style={{ minHeight: 'min(90vh, 840px)' }}>
 
-        {/* Hero image — static for now, replace src with heroVideo once Dobermann-hero.mp4 is in assets */}
+        {/* Base photo — always visible */}
         <motion.img
           src={heroImage}
           alt=""
@@ -174,7 +184,24 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          style={{ scale: heroImageScale, y: heroImageY }}
+          style={{ scale: heroImageScale, y: heroImageY, zIndex: 1 }}
+        />
+
+        {/* Illustration revealed by cursor */}
+        <motion.img
+          ref={heroIllustrationRef}
+          src={heroIllustrationImage}
+          alt=""
+          aria-hidden="true"
+          className="absolute bottom-0 right-0 h-[90%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
+          style={{
+            scale: heroImageScale,
+            y: heroImageY,
+            zIndex: 2,
+            opacity: 0,
+            maskImage: 'none',
+            WebkitMaskImage: 'none',
+          }}
         />
 
         {/* Content — sits in normal flow, z-10 so it's above the image */}
