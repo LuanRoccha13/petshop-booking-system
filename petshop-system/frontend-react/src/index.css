@@ -426,7 +426,7 @@
   font-weight: 600;
   font-size: 0.95rem;
   line-height: 1;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   padding: 15px 28px;
   border: none;
   cursor: pointer;

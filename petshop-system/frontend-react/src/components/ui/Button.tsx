@@ -32,7 +32,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'relative inline-flex items-center justify-center gap-2 font-ui font-semibold rounded-pill outline-none whitespace-nowrap overflow-hidden isolation-auto';
+      'relative inline-flex items-center justify-center gap-2 font-ui font-semibold rounded-[12px] outline-none whitespace-nowrap overflow-hidden isolation-auto';
 
     const variants = {
       primary:
