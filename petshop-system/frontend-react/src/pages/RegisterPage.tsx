@@ -1,10 +1,33 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { AuthLayout } from '../components/layout/AuthLayout';
 import { Button, Input, Icon } from '../components/ui';
+import { MOTION } from '../design-tokens/motion';
 import { useAuth } from '../hooks/useAuth';
 import { getErrorMessage } from '../utils/errors';
 import { validateEmail, validatePassword } from '../utils/validation';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: MOTION.stagger.base,
+      delayChildren: 0.1, // Espera o AuthVisual entrar
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16, filter: MOTION.blur.soft },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: MOTION.blur.none,
+    transition: { duration: MOTION.duration.enter, ease: MOTION.ease.premium }
+  },
+};
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -51,18 +74,23 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout>
-      <div className="flex flex-col gap-8 w-full">
-        <div>
+      <motion.div 
+        className="flex flex-col gap-8 w-full"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={itemVariants}>
           <Link to="/" className="inline-flex items-center gap-2 text-ink-muted hover:text-ink mb-6 transition-colors">
             <Icon name="ArrowLeft" size={16} />
             <span className="text-sm font-semibold">Voltar para home</span>
           </Link>
-          <h1 className="font-display text-3xl font-bold text-ink mb-2">Criar conta</h1>
-          <p className="text-ink-muted">Inicie o ritual de cuidado do seu pet.</p>
-        </div>
+          <h1 className="font-display text-3xl font-bold text-ink mb-2 tracking-tight">Criar conta</h1>
+          <p className="text-ink-muted leading-relaxed">Inicie o ritual de cuidado do seu pet.</p>
+        </motion.div>
 
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-          <div className="flex flex-col gap-1.5">
+          <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
             <label htmlFor="register-name" className="text-sm font-semibold text-ink">Nome completo</label>
             <Input
               id="register-name"
@@ -80,9 +108,9 @@ export default function RegisterPage() {
                 <Icon name="CircleAlert" size={12} /> {fieldErrors.name}
               </span>
             )}
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col gap-1.5">
+          <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
             <label htmlFor="register-email" className="text-sm font-semibold text-ink">E-mail</label>
             <Input
               id="register-email"
@@ -100,9 +128,9 @@ export default function RegisterPage() {
                 <Icon name="CircleAlert" size={12} /> {fieldErrors.email}
               </span>
             )}
-          </div>
+          </motion.div>
 
-          <div className="flex flex-col gap-1.5">
+          <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
             <label htmlFor="register-password" className="text-sm font-semibold text-ink">Senha</label>
             <Input
               id="register-password"
@@ -130,27 +158,34 @@ export default function RegisterPage() {
                 <Icon name="CircleAlert" size={12} /> {fieldErrors.password}
               </span>
             )}
-          </div>
+          </motion.div>
 
           {error && (
-            <div className="bg-danger-soft border border-danger/20 text-danger px-4 py-3 rounded-lg text-sm font-semibold flex items-start gap-3 mt-2" role="alert">
+            <motion.div 
+              initial={{ opacity: 0, height: 0, scale: 0.95 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              className="bg-danger-soft border border-danger/20 text-danger px-4 py-3 rounded-lg text-sm font-semibold flex items-start gap-3 mt-2" 
+              role="alert"
+            >
               <Icon name="TriangleAlert" size={18} className="shrink-0 mt-0.5" />
               {error}
-            </div>
+            </motion.div>
           )}
 
-          <Button type="submit" isLoading={isLoading} className="w-full mt-2" size="lg">
-            Finalizar cadastro
-          </Button>
+          <motion.div variants={itemVariants}>
+            <Button type="submit" isLoading={isLoading} className="w-full mt-2" size="lg">
+              Finalizar cadastro
+            </Button>
+          </motion.div>
         </form>
 
-        <p className="text-center text-sm text-ink-muted mt-4">
+        <motion.p variants={itemVariants} className="text-center text-sm text-ink-muted mt-4">
           Já possui conta?{' '}
           <Link to="/login" className="font-semibold text-brand-600 hover:text-brand-700 transition-colors">
             Fazer login
           </Link>
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
     </AuthLayout>
   );
 }

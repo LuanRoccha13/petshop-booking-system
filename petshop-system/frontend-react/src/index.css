@@ -115,6 +115,14 @@
   --ease-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
   --ease-premium: cubic-bezier(.22, 1, .36, 1);
+
+  /* Semantic durations (espelham os tokens TS do MOTION object) */
+  --duration-fast:  140ms;
+  --duration-base:  260ms;
+  --duration-slow:  440ms;
+  --duration-enter: 720ms;
+  --duration-scene: 1100ms;
+  --stagger-base:   80ms;
 }
 
 .premium-theme {
@@ -768,3 +776,80 @@ button:focus-visible,
 .marquee-track:hover {
   animation-play-state: paused;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MOTION LIBRARY — Classes CSS compartilhadas
+   Todas as durações/easings usam as variáveis do :root acima.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* Cursor contextual do RevealMask */
+.reveal-cursor {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid rgba(235, 106, 44, 0.65);
+  border-radius: 50%;
+  pointer-events: none;
+  /* transform é escrito via JS (tick loop) */
+  transform: translate(-50%, -50%) scale(0.6);
+  opacity: 0;
+  transition:
+    opacity  var(--duration-base) var(--ease-premium),
+    transform var(--duration-base) var(--ease-premium);
+  z-index: 20;
+  will-change: transform, opacity;
+}
+
+.reveal-cursor.is-active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Tratamento visual da ilustração revelada — duotone sutil da marca */
+.reveal-illustration {
+  filter: sepia(0.22) hue-rotate(-6deg) saturate(1.2) brightness(1.04);
+}
+
+/* Grain orgânico — textura física dentro do reveal */
+.reveal-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  animation: grain-shift 0.8s steps(8) infinite;
+  will-change: background-position;
+  z-index: 5;
+}
+
+@keyframes grain-shift {
+  0%   { background-position:   0%   0%; }
+  12%  { background-position: -5%  -10%; }
+  25%  { background-position:  -15%  5%; }
+  37%  { background-position:   7%  -25%;}
+  50%  { background-position: -5%   15%; }
+  62%  { background-position:  15%   5%; }
+  75%  { background-position:  0%   35%; }
+  87%  { background-position: -25%  10%; }
+  100% { background-position:   0%   0%; }
+}
+
+/* ScrollReveal — classe CSS alternativa para conteúdo não-React */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(6px);
+  transition:
+    opacity   var(--duration-enter) var(--ease-premium),
+    transform var(--duration-enter) var(--ease-premium),
+    filter    var(--duration-enter) var(--ease-premium);
+}
+
+.scroll-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+

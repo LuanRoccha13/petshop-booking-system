@@ -1,47 +1,56 @@
-import React, { createContext, useContext, useState } from 'react';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import React, { createContext, type ReactNode } from 'react';
+import { HTMLMotionProps } from 'framer-motion';
 import { cn } from '../../utils/cn';
-import { PREMIUM_TRANSITIONS } from '../../design-tokens/motion';
+import { MotionCard } from '../motion/MotionCard';
 
-const CardContext = createContext<{
-  isHovered: boolean;
-  setIsHovered: (v: boolean) => void;
-}>({ isHovered: false, setIsHovered: () => {} });
+const CardContext = createContext<{ isHovered: boolean }>({ isHovered: false });
 
-export interface CardProps extends HTMLMotionProps<'div'> {
+export interface CardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
   interactive?: boolean;
   variant?: 'default' | 'glass' | 'elevated' | 'flat' | 'highlight' | 'minimal';
+  tilt?: boolean;
+  children?: ReactNode;
 }
 
-export function Card({ className, children, interactive = false, variant = 'default', ...props }: CardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
+/**
+ * Foundation Card Component
+ *
+ * Herda toda a física do MotionCard (primitivo da Motion Library).
+ * Cards interativos têm cursor spotlight via MotionValues — zero re-render.
+ * Cards interativos opcionalmente têm micro-inclinação (tilt).
+ */
+export function Card({
+  className,
+  children,
+  interactive = false,
+  variant = 'default',
+  tilt = false,
+  ...props
+}: CardProps) {
   const variants = {
-    default: 'bg-surface/88 border border-dark-border/10 shadow-sm',
-    glass: 'bg-surface/60 backdrop-blur-md border border-white/20 shadow-elevation-1',
-    elevated: 'bg-surface border border-dark-border/5 shadow-elevation-2',
-    flat: 'bg-surface-soft border-transparent',
+    default:   'bg-surface/88 border border-dark-border/10 shadow-sm',
+    glass:     'bg-surface/60 backdrop-blur-md border border-white/20',
+    elevated:  'bg-surface border border-dark-border/5 shadow-elevation-2',
+    flat:      'bg-surface-soft border-transparent',
     highlight: 'bg-brand-500/5 border border-brand-500/20 text-brand-900',
-    minimal: 'bg-transparent border-transparent p-0',
+    minimal:   'bg-transparent border-transparent p-0',
   };
 
   return (
-    <CardContext.Provider value={{ isHovered, setIsHovered }}>
-      <motion.div
-        onHoverStart={() => interactive && setIsHovered(true)}
-        onHoverEnd={() => interactive && setIsHovered(false)}
-        whileHover={interactive ? { y: -2, boxShadow: 'var(--shadow-elevation-2)', borderColor: 'rgba(235, 106, 44, 0.2)' } : {}}
-        transition={PREMIUM_TRANSITIONS.springComfortable}
+    <CardContext.Provider value={{ isHovered: false }}>
+      <MotionCard
+        interactive={interactive}
+        tilt={tilt && interactive}
         className={cn(
-          'relative overflow-hidden rounded-2xl p-6 transition-colors',
+          'rounded-2xl p-6 border transition-colors duration-300',
           variants[variant],
-          interactive && 'cursor-pointer hover:bg-surface',
+          interactive && 'cursor-pointer',
           className
         )}
         {...props}
       >
         {children}
-      </motion.div>
+      </MotionCard>
     </CardContext.Provider>
   );
 }

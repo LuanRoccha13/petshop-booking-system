@@ -1,13 +1,14 @@
-﻿import { useRef } from 'react';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { ScrollScrubVideo } from '../components/effects/ScrollScrubVideo';
 import { LandingLayout } from '../components/layout/LandingLayout';
 import { Section } from '../components/layout/Section';
 import { ContentArea } from '../components/layout/ContentArea';
 import { Button, Card, Badge, Accordion, Icon, Timeline, TestimonialCarousel } from '../components/ui';
-import { PREMIUM_TRANSITIONS } from '../design-tokens/motion';
+import { MOTION, PREMIUM_TRANSITIONS } from '../design-tokens/motion';
 import { useRevealMask } from '../hooks/useRevealMask';
+import { ScrollReveal } from '../components/motion/ScrollReveal';
 
 import heroImage from '../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_f40r03f40r03f40r-Photoroom.png';
 import heroIllustrationImage from '../assets/images/mais-imagens-pet-shop/Gemini_Generated_Image_ayha6jayha6jayha-Photoroom.png';
@@ -133,35 +134,58 @@ function MarqueeItem({ icon, label }: { icon: string; label: string }) {
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const heroRef                = useRef<HTMLElement>(null);
-  const heroIllustrationRef    = useRef<HTMLImageElement>(null);
-  const quoteSectionRef        = useRef<HTMLElement>(null);
-  const quoteIllustrationRef   = useRef<HTMLImageElement>(null);
 
+  // Section refs
+  const heroRef              = useRef<HTMLElement>(null);
+  const quoteSectionRef      = useRef<HTMLElement>(null);
+
+  // Illustration refs (reveal mask targets)
+  const heroIllustrationRef  = useRef<HTMLImageElement>(null);
+  const quoteIllustrationRef = useRef<HTMLImageElement>(null);
+
+  // Cursor element refs — atualizados dentro do tick() do useRevealMask
+  const heroCursorRef        = useRef<HTMLDivElement>(null);
+  const quoteCursorRef       = useRef<HTMLDivElement>(null);
+
+  // ── Hero scroll progress — fonte de verdade de todos os elementos do Hero
   const { scrollYProgress: heroScroll } = useScroll({
     target: heroRef,
-    offset: ["start start", "end start"]
+    offset: ['start start', 'end start'],
   });
 
-  const heroImageScale = useTransform(heroScroll, [0, 1], [1, 1.05]);
-  const heroImageY = useTransform(heroScroll, [0, 1], ["0%", "15%"]);
-  const heroTextOpacity = useTransform(heroScroll, [0, 0.6], [1, 0]);
-  const heroTextY = useTransform(heroScroll, [0, 1], ["0%", "20%"]);
+  // Spring suaviza o scroll para animações mais físicas
+  const heroScrollSmooth = useSpring(heroScroll, { stiffness: 60, damping: 18 });
 
-  // Reveal-mask effect: cursor unveils Arcane illustration over the photo
+  // Cada elemento do Hero tem velocidade diferente — mesma fonte de verdade
+  const heroImageScale   = useTransform(heroScrollSmooth, [0, 1], [1, MOTION.scale.heroScroll]);
+  const heroImageY       = useTransform(heroScrollSmooth, [0, 1], ['0%', '14%']);
+  const heroBadgeY       = useTransform(heroScrollSmooth, [0, 0.6], ['0%', '-8%']);
+  const heroHeadlineY    = useTransform(heroScrollSmooth, [0, 1], ['0%', '10%']);
+  const heroHeadlineBlur = useTransform(heroScrollSmooth, [0, 0.5], [0, 4]);
+  const heroCTAOpacity   = useTransform(heroScrollSmooth, [0, 0.38], [1, 0]);
+  const heroStatsY       = useTransform(heroScrollSmooth, [0, 1], ['0%', '6%']);
+  const heroStatsOpacity = useTransform(heroScrollSmooth, [0, 0.45], [1, 0]);
+  const heroContentY     = useTransform(heroScrollSmooth, [0, 1], ['0%', '18%']);
+  const heroContentOpacity = useTransform(heroScrollSmooth, [0, 0.55], [1, 0]);
+
+  // ── Reveal Mask — Seção Filosofia
   useRevealMask(quoteIllustrationRef, quoteSectionRef, {
     outerRadius:  140,
     innerRatio:   0.42,
     cursorAlpha:  0.11,
     radiusAlpha:  0.13,
+    cursorEl:     quoteCursorRef,
+    autoHint:     false, // discovery apenas no Hero
   });
 
-  // Reveal-mask effect for the Hero section
+  // ── Reveal Mask — Hero
   useRevealMask(heroIllustrationRef, heroRef, {
     outerRadius:  200,
-    innerRatio:   0.42,
+    innerRatio:   0.40,
     cursorAlpha:  0.11,
     radiusAlpha:  0.13,
+    cursorEl:     heroCursorRef,
+    autoHint:     true, // discovery acontece aqui — localStorage
   });
 
   return (
@@ -173,9 +197,18 @@ export default function LandingPage() {
           Image is position:absolute anchored to bottom-right, height-driven.
           Text is normal flow with z-10. Exactly how Apple/Stripe do it.
       ───────────────────────────────────────────────────────────────── */}
+
+      {/* ─────────────────────────────────────────────────────────────────
+          HERO SECTION — narrativa cinematográfica scroll-driven
+          Todos os elementos conectados ao mesmo heroScrollSmooth.
+          Um único organismo que respira junto.
+      ───────────────────────────────────────────────────────────────── */}
       <section ref={heroRef} className="relative overflow-hidden bg-bg" style={{ minHeight: 'min(90vh, 840px)' }}>
 
-        {/* Base photo — always visible */}
+        {/* Cursor contextual do Hero Reveal */}
+        <div ref={heroCursorRef} className="reveal-cursor" aria-hidden="true" />
+
+        {/* Base photo — sempre visível */}
         <motion.img
           src={heroImage}
           alt=""
@@ -183,11 +216,11 @@ export default function LandingPage() {
           className="absolute bottom-0 right-0 h-[90%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: MOTION.duration.scene, ease: MOTION.ease.premium }}
           style={{ scale: heroImageScale, y: heroImageY, zIndex: 1 }}
         />
 
-        {/* Illustration revealed by cursor */}
+        {/* Ilustração revelada pelo cursor */}
         <motion.img
           ref={heroIllustrationRef}
           src={heroIllustrationImage}
@@ -204,16 +237,18 @@ export default function LandingPage() {
           }}
         />
 
-        {/* Content — sits in normal flow, z-10 so it's above the image */}
+        {/* Content — narrativa scroll-driven, todos os elementos no mesmo heroScrollSmooth */}
         <ContentArea className="relative z-10 h-full flex items-center">
-          <motion.div 
+          <motion.div
             className="flex flex-col items-start gap-7 py-28 lg:py-36 max-w-[520px]"
-            style={{ opacity: heroTextOpacity, y: heroTextY }}
+            style={{ opacity: heroContentOpacity, y: heroContentY }}
           >
+            {/* Badge — desce mais rápido */}
             <motion.div
+              style={{ y: heroBadgeY }}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+              transition={{ duration: MOTION.duration.slow, delay: 0.1, ease: MOTION.ease.premium }}
             >
               <Badge variant="outline" className="text-brand-600 border-brand-500/30 bg-brand-soft">
                 <span className="w-2 h-2 rounded-full bg-brand-500 mr-1.5 animate-pulse" />
@@ -221,11 +256,13 @@ export default function LandingPage() {
               </Badge>
             </motion.div>
 
+            {/* Headline — blur sutil no scroll */}
             <motion.h1
               className="font-display text-5xl lg:text-[5.5rem] xl:text-[6rem] font-bold text-ink leading-[1.02] tracking-tight"
+              style={{ y: heroHeadlineY, filter: useTransform(heroHeadlineBlur, v => `blur(${v}px)`) }}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.18 }}
+              transition={{ duration: MOTION.duration.slow, delay: 0.18, ease: MOTION.ease.premium }}
             >
               Cuidado que<br />acalma.
             </motion.h1>
@@ -234,16 +271,18 @@ export default function LandingPage() {
               className="text-lg lg:text-xl text-ink-muted leading-relaxed max-w-[440px]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.28 }}
+              transition={{ duration: MOTION.duration.slow, delay: 0.28, ease: MOTION.ease.premium }}
             >
               Banho, tosa e acompanhamento digital em uma experiência desenhada para parecer calma, precisa e realmente especial.
             </motion.p>
 
+            {/* CTA — desaparece mais cedo no scroll */}
             <motion.div
               className="flex flex-col sm:flex-row gap-4 mt-2"
+              style={{ opacity: heroCTAOpacity }}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.38 }}
+              transition={{ duration: MOTION.duration.slow, delay: 0.38, ease: MOTION.ease.premium }}
             >
               <Button size="lg" onClick={() => navigate('/register')} rightIcon={<Icon name="ArrowRight" size={18} />}>
                 Criar minha conta
@@ -255,13 +294,14 @@ export default function LandingPage() {
           </motion.div>
         </ContentArea>
 
-        {/* Premium Indicators */}
+        {/* Stats — velocidade própria no scroll */}
         <ContentArea className="absolute inset-x-0 bottom-8 z-20 pointer-events-none">
-          <motion.div 
+          <motion.div
             className="grid gap-5 border-t border-ink/10 pt-5 sm:grid-cols-3 max-w-xl"
+            style={{ y: heroStatsY, opacity: heroStatsOpacity }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: MOTION.duration.slow, delay: 0.6, ease: MOTION.ease.premium }}
           >
             <div>
               <span className="block text-xl font-semibold text-ink">~2 min</span>
@@ -405,7 +445,10 @@ export default function LandingPage() {
           style={{ zIndex: 1 }} 
         />
 
-        {/* Base photo — always visible */}
+        {/* Cursor contextual da seção Filosofia */}
+        <div ref={quoteCursorRef} className="reveal-cursor" aria-hidden="true" />
+
+        {/* Base photo — sempre visível */}
         <img
           src={quoteImage}
           alt=""
@@ -414,10 +457,7 @@ export default function LandingPage() {
           style={{ zIndex: 1 }}
         />
 
-        {/* Illustration (Arcane style) — hidden by CSS radial-gradient mask.
-            The mask is written by useRevealMask entirely via DOM refs.
-            Initial opacity:0 prevents flash before the rAF loop takes over.
-            Both images must have identical sizing classes so pixels align. */}
+        {/* Ilustração revelada */}
         <img
           ref={quoteIllustrationRef}
           src={quoteIllustrationImage}
@@ -425,10 +465,10 @@ export default function LandingPage() {
           aria-hidden="true"
           className="absolute bottom-0 -right-[130px] lg:-right-[160px] h-[100%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
           style={{
-            zIndex:            2,
-            opacity:           0,
-            maskImage:         'none',
-            WebkitMaskImage:   'none',
+            zIndex:          2,
+            opacity:         0,
+            maskImage:       'none',
+            WebkitMaskImage: 'none',
           }}
         />
 
