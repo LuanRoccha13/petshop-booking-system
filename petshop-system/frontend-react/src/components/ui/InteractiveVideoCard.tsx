@@ -108,8 +108,8 @@ export function InteractiveVideoCard({
       onFocus={showVideo}
       onBlur={hideVideo}
     >
-      {/* ── Media slot — identical dimensions to the original img wrapper ── */}
-      <div className="aspect-[4/3] overflow-hidden relative">
+      {/* ── Media slot — aspect ratio customizado para mobile ── */}
+      <div className="aspect-video sm:aspect-square md:aspect-[4/3] overflow-hidden relative">
 
         {/* Poster — sits on top by default (z-10), fades out on hover */}
         <img
@@ -117,7 +117,7 @@ export function InteractiveVideoCard({
           src={poster}
           alt={title}
           draggable={false}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-105"
           style={{
             opacity: 1,
             transition: `${FADE}, transform 700ms ease`,
@@ -134,7 +134,7 @@ export function InteractiveVideoCard({
           muted
           loop
           disablePictureInPicture
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-105"
           style={{
             opacity: 0,
             transition: `${FADE}, transform 700ms ease`,
@@ -143,10 +143,10 @@ export function InteractiveVideoCard({
         />
       </div>
 
-      {/* ── Text content — completely unchanged ── */}
-      <div className="p-6 flex-1 flex flex-col">
-        <Card.Title className="text-2xl mb-3">{title}</Card.Title>
-        <Card.Description>{description}</Card.Description>
+      {/* ── Text content ── */}
+      <div className="p-5 md:p-6 flex-1 flex flex-col justify-center">
+        <Card.Title className="text-xl md:text-2xl mb-2 md:mb-3">{title}</Card.Title>
+        <Card.Description className="text-sm md:text-base line-clamp-3 md:line-clamp-none">{description}</Card.Description>
       </div>
     </Card>
   );

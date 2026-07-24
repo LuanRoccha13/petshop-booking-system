@@ -808,6 +808,94 @@ button:focus-visible,
 /* Tratamento visual da ilustração revelada — duotone sutil da marca */
 .reveal-illustration {
   filter: sepia(0.22) hue-rotate(-6deg) saturate(1.2) brightness(1.04);
+  /* A transição suave do filtro SVG (organic-reveal) se aplica em .organic-reveal no HTML, ou diretamente nos componentes */
+}
+
+/* ─── Premium Shimmer Border ─────────────────────────────────────────────────── */
+@keyframes border-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.shimmer-border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px; /* Espessura da borda iluminada */
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.shimmer-border::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(235,106,44, 0.05) 30%,
+    rgba(235,106,44, 0.6) 50%,
+    rgba(235,106,44, 0.05) 70%,
+    transparent 100%
+  );
+  animation: border-spin 5s linear infinite;
+}
+
+/* ─── Inner Shimmer (Hover Sweep) ────────────────────────────────────────────── */
+@keyframes sweep-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.shimmer-sweep {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  width: 150%;
+  aspect-ratio: 1;
+  pointer-events: none;
+  background: linear-gradient(-50deg, transparent, rgba(235,106,44, 0.35), transparent);
+  -webkit-mask-image: radial-gradient(circle at bottom, black 0%, transparent 60%);
+  mask-image: radial-gradient(circle at bottom, black 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+
+.group:hover .shimmer-sweep,
+.group:focus-visible .shimmer-sweep {
+  opacity: 1;
+  animation: sweep-spin 2.5s linear infinite;
+}
+
+/* ─── Breathe Glow (Hover Bottom Highlight) ──────────────────────────────────── */
+@keyframes breathe-scale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.shimmer-breathe {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 -8px 24px 2px rgba(235,106,44, 0);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+
+.group:hover .shimmer-breathe,
+.group:focus-visible .shimmer-breathe {
+  opacity: 1;
+  box-shadow: inset 0 -8px 24px 2px rgba(235,106,44, 0.4);
+  animation: breathe-scale 2.5s ease-in-out infinite;
 }
 
 /* Grain orgânico — textura física dentro do reveal */

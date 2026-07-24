@@ -1,6 +1,5 @@
 import React from 'react';
-import { Navigation } from './Navigation';
-import { Button } from '../ui/Button';
+import { LandingNavbar } from './LandingNavbar';
 import { ContentArea } from './ContentArea';
 import { Link } from 'react-router-dom';
 import { PageContainer } from './PageContainer';
@@ -13,30 +12,7 @@ export interface LandingLayoutProps {
 export function LandingLayout({ children }: LandingLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col bg-bg relative overflow-x-hidden">
-      <header className="fixed top-0 inset-x-0 z-[100] bg-surface/80 backdrop-blur-xl border-b border-dark-border/5 h-[80px] flex items-center transition-all">
-        <ContentArea className="flex items-center justify-between w-full">
-          <Link to="/" className="flex items-center transition-opacity hover:opacity-90 outline-none focus-visible:shadow-focus rounded-lg">
-            <Logo size="md" />
-          </Link>
-          
-          <Navigation 
-            orientation="horizontal" 
-            className="hidden md:flex" 
-            items={[
-              { label: 'Serviços', href: '/services' },
-              { label: 'Especialistas', href: '/experts' },
-              { label: 'O Spa', href: '/spa' },
-            ]} 
-          />
-
-          <div className="flex items-center gap-4">
-            <Link to="/login" className="text-sm font-semibold text-ink-muted hover:text-brand-600 transition-colors hidden sm:block">Entrar</Link>
-            <Link to="/register">
-              <Button size="sm">Agendar agora</Button>
-            </Link>
-          </div>
-        </ContentArea>
-      </header>
+      <LandingNavbar />
       
       <main className="flex-1 pt-[80px]">
         <PageContainer>

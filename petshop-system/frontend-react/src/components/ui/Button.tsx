@@ -9,6 +9,7 @@ export interface ButtonProps extends HTMLMotionProps<'button'> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
+  shimmer?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
 }
@@ -27,6 +28,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'primary',
       size = 'md',
       isLoading = false,
+      shimmer = false,
       leftIcon,
       rightIcon,
       children,
@@ -78,6 +80,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isDisabled}
         isLoading={isLoading}
         showGlow={variant === 'primary'}
+        shimmer={shimmer}
         // Sobrescreve whileHover para incluir a shadow correta por variante
         whileHover={!isDisabled ? {
           scale: MOTION.scale.hover,
@@ -100,11 +103,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading && (
-          <span className="absolute inset-0 flex items-center justify-center">
+          <span className="absolute inset-0 flex items-center justify-center z-10">
             <Spinner size={size === 'sm' ? 14 : 18} />
           </span>
         )}
-        <span className={cn('flex items-center gap-2', isLoading && 'opacity-0')}>
+        <span className={cn('relative z-10 flex items-center gap-2', isLoading && 'opacity-0')}>
           {leftIcon}
           {children as React.ReactNode}
           {rightIcon}

@@ -6,6 +6,7 @@ import { LandingLayout } from '../components/layout/LandingLayout';
 import { Section } from '../components/layout/Section';
 import { ContentArea } from '../components/layout/ContentArea';
 import { Button, Card, Badge, Accordion, Icon, Timeline, TestimonialCarousel } from '../components/ui';
+import { SnapCarousel } from '../components/ui/SnapCarousel';
 import { MOTION, PREMIUM_TRANSITIONS } from '../design-tokens/motion';
 import { useRevealMask } from '../hooks/useRevealMask';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
@@ -203,30 +204,30 @@ export default function LandingPage() {
           Todos os elementos conectados ao mesmo heroScrollSmooth.
           Um único organismo que respira junto.
       ───────────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative overflow-hidden bg-bg" style={{ minHeight: 'min(90vh, 840px)' }}>
+      <section id="hero" ref={heroRef} className="relative overflow-hidden bg-bg flex flex-col lg:block min-h-[95dvh] sm:min-h-[80vh] lg:min-h-[840px]">
 
         {/* Cursor contextual do Hero Reveal */}
         <div ref={heroCursorRef} className="reveal-cursor" aria-hidden="true" />
 
-        {/* Base photo — sempre visível */}
+        {/* Base photo — sempre visível apenas no lg */}
         <motion.img
           src={heroImage}
           alt=""
           aria-hidden="true"
-          className="absolute bottom-0 right-0 h-[90%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
+          className="hidden lg:block absolute bottom-0 right-0 h-[90%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: MOTION.duration.scene, ease: MOTION.ease.premium }}
           style={{ scale: heroImageScale, y: heroImageY, zIndex: 1 }}
         />
 
-        {/* Ilustração revelada pelo cursor */}
+        {/* Ilustração revelada pelo cursor (apenas lg) */}
         <motion.img
           ref={heroIllustrationRef}
           src={heroIllustrationImage}
           alt=""
           aria-hidden="true"
-          className="absolute bottom-0 right-0 h-[90%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
+          className="hidden lg:block absolute bottom-0 right-0 h-[90%] w-auto max-w-none object-contain object-bottom pointer-events-none select-none"
           style={{
             scale: heroImageScale,
             y: heroImageY,
@@ -238,9 +239,9 @@ export default function LandingPage() {
         />
 
         {/* Content — narrativa scroll-driven, todos os elementos no mesmo heroScrollSmooth */}
-        <ContentArea className="relative z-10 h-full flex items-center">
+        <ContentArea className="relative z-10 flex-1 flex items-center lg:h-full lg:block lg:pt-[10%]">
           <motion.div
-            className="flex flex-col items-start gap-7 py-28 lg:py-36 max-w-[520px]"
+            className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 lg:gap-7 py-24 lg:py-0 w-full lg:max-w-[520px] mx-auto lg:mx-0"
             style={{ opacity: heroContentOpacity, y: heroContentY }}
           >
             {/* Badge — desce mais rápido */}
@@ -258,7 +259,7 @@ export default function LandingPage() {
 
             {/* Headline — blur sutil no scroll */}
             <motion.h1
-              className="font-display text-5xl lg:text-[5.5rem] xl:text-[6rem] font-bold text-ink leading-[1.02] tracking-tight"
+              className="font-display text-[2.75rem] sm:text-5xl lg:text-[5.5rem] xl:text-[6rem] font-bold text-ink leading-[1.05] lg:leading-[1.02] tracking-tight"
               style={{ y: heroHeadlineY, filter: useTransform(heroHeadlineBlur, v => `blur(${v}px)`) }}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -268,7 +269,7 @@ export default function LandingPage() {
             </motion.h1>
 
             <motion.p
-              className="text-lg lg:text-xl text-ink-muted leading-relaxed max-w-[440px]"
+              className="text-base sm:text-lg lg:text-xl text-ink-muted leading-relaxed max-w-[90%] sm:max-w-[440px]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: MOTION.duration.slow, delay: 0.28, ease: MOTION.ease.premium }}
@@ -278,16 +279,16 @@ export default function LandingPage() {
 
             {/* CTA — desaparece mais cedo no scroll */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 mt-2"
+              className="flex flex-col sm:flex-row w-full sm:w-auto gap-3 lg:gap-4 mt-2"
               style={{ opacity: heroCTAOpacity }}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: MOTION.duration.slow, delay: 0.38, ease: MOTION.ease.premium }}
             >
-              <Button size="lg" onClick={() => navigate('/register')} rightIcon={<Icon name="ArrowRight" size={18} />}>
+              <Button size="lg" shimmer onClick={() => navigate('/register')} rightIcon={<Icon name="ArrowRight" size={18} />} className="w-full sm:w-auto">
                 Criar minha conta
               </Button>
-              <Button size="lg" variant="secondary" onClick={() => navigate('/login')}>
+              <Button size="lg" variant="secondary" onClick={() => navigate('/login')} className="w-full sm:w-auto hidden sm:flex">
                 Ver a experiência
               </Button>
             </motion.div>
@@ -295,25 +296,25 @@ export default function LandingPage() {
         </ContentArea>
 
         {/* Stats — velocidade própria no scroll */}
-        <ContentArea className="absolute inset-x-0 bottom-8 z-20 pointer-events-none">
+        <ContentArea className="absolute inset-x-0 bottom-4 lg:bottom-8 z-20 pointer-events-auto">
           <motion.div
-            className="grid gap-5 border-t border-ink/10 pt-5 sm:grid-cols-3 max-w-xl"
+            className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 lg:grid lg:gap-5 border-t border-ink/10 pt-5 lg:grid-cols-3 max-w-xl pb-4 lg:pb-0"
             style={{ y: heroStatsY, opacity: heroStatsOpacity }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: MOTION.duration.slow, delay: 0.6, ease: MOTION.ease.premium }}
           >
-            <div>
-              <span className="block text-xl font-semibold text-ink">~2 min</span>
-              <span className="font-ui mt-1 block text-[10px] tracking-wider uppercase text-ink-muted">Agendamento rápido</span>
+            <div className="flex-none snap-start bg-surface-soft/80 lg:bg-transparent backdrop-blur-md px-5 py-3 lg:p-0 rounded-2xl lg:rounded-none border border-dark-border/5 lg:border-none">
+              <span className="block text-lg lg:text-xl font-semibold text-ink whitespace-nowrap">+2.000</span>
+              <span className="font-ui mt-0.5 lg:mt-1 block text-[10px] tracking-wider uppercase text-ink-muted whitespace-nowrap">Pets Atendidos</span>
             </div>
-            <div>
-              <span className="block text-xl font-semibold text-ink">360°</span>
-              <span className="font-ui mt-1 block text-[10px] tracking-wider uppercase text-ink-muted">Cuidado completo</span>
+            <div className="flex-none snap-start bg-surface-soft/80 lg:bg-transparent backdrop-blur-md px-5 py-3 lg:p-0 rounded-2xl lg:rounded-none border border-dark-border/5 lg:border-none">
+              <span className="block text-lg lg:text-xl font-semibold text-ink whitespace-nowrap">98%</span>
+              <span className="font-ui mt-0.5 lg:mt-1 block text-[10px] tracking-wider uppercase text-ink-muted whitespace-nowrap">Satisfação</span>
             </div>
-            <div className="hidden sm:block">
-              <span className="block text-xl font-semibold text-ink">4.9★</span>
-              <span className="font-ui mt-1 block text-[10px] tracking-wider uppercase text-ink-muted">Avaliações positivas</span>
+            <div className="flex-none snap-start bg-surface-soft/80 lg:bg-transparent backdrop-blur-md px-5 py-3 lg:p-0 rounded-2xl lg:rounded-none border border-dark-border/5 lg:border-none">
+              <span className="block text-lg lg:text-xl font-semibold text-ink whitespace-nowrap">~2 min</span>
+              <span className="font-ui mt-0.5 lg:mt-1 block text-[10px] tracking-wider uppercase text-ink-muted whitespace-nowrap">Para agendar</span>
             </div>
           </motion.div>
         </ContentArea>
@@ -376,14 +377,26 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* ─────────────────────────────────────────────────────────────────
+          MOBILE VISUAL SIGNATURE (Hero Doberman moved down for mobile)
+      ───────────────────────────────────────────────────────────────── */}
+      <section className="lg:hidden relative bg-bg py-12 flex justify-center items-center overflow-hidden" style={{ minHeight: '60vh' }}>
+        <img
+          src={heroImage}
+          alt=""
+          aria-hidden="true"
+          className="absolute bottom-0 w-[90%] max-w-[400px] h-auto object-contain object-bottom pointer-events-none select-none"
+        />
+      </section>
+
       {/* Services Section */}
-      <Section animateOnScroll className="bg-surface-soft py-24">
+      <Section id="services" animateOnScroll className="bg-surface-soft py-14 lg:py-24">
         <ContentArea>
           <div className="text-center mb-16 max-w-2xl mx-auto">
             <h2 className="font-display text-4xl font-bold text-ink mb-6">Nossa rotina</h2>
             <p className="text-lg text-ink-muted">A experiência B&T alia protocolos suaves de manejo com tecnologia que te mantém sempre informado.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <SnapCarousel desktopGridCols={3} gap="lg" className="-mx-5 md:mx-0">
             {serviceCards.map((card, idx) => (
               <InteractiveVideoCard
                 key={idx}
@@ -393,16 +406,16 @@ export default function LandingPage() {
                 description={card.text}
               />
             ))}
-          </div>
+          </SnapCarousel>
         </ContentArea>
       </Section>
 
       {/* ─────────────────────────────────────────────────────────────────
           TIMELINE SECTION (Como Funciona)
       ───────────────────────────────────────────────────────────────── */}
-      <Section className="py-24 bg-surface relative overflow-hidden">
+      <Section id="process" className="py-14 lg:py-24 bg-surface relative overflow-hidden">
         <ContentArea>
-          <div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="grid gap-12 lg:gap-16 lg:grid-cols-[0.8fr_1.2fr]">
             <motion.div 
               className="lg:sticky lg:top-32 lg:self-start"
               initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
@@ -430,6 +443,7 @@ export default function LandingPage() {
           Mouse events on the section translate to mask coords via img.getBoundingClientRect().
       ───────────────────────────────────────────────────────────────── */}
       <section
+        id="philosophy"
         ref={quoteSectionRef}
         className="relative overflow-hidden bg-ink text-white"
         style={{ minHeight: 'min(96vh, 980px)' }}
@@ -477,13 +491,13 @@ export default function LandingPage() {
 
         {/* Content — z-10 (above gradient, above images) */}
         <ContentArea className="relative h-full flex items-end" style={{ zIndex: 10 }}>
-          <div className="flex flex-col items-start gap-8 py-32 lg:py-40 max-w-[520px]">
+          <div className="flex flex-col items-start gap-6 lg:gap-8 py-20 lg:py-40 max-w-[520px]">
             <Badge variant="outline" className="text-white/60 border-white/20">A FILOSOFIA DO CUIDADO</Badge>
             <h2 className="font-display text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
               A beleza vem depois.<br />
               <span className="text-brand-500">A confiânça vem primeiro.</span>
             </h2>
-            <p className="text-lg text-white/70 leading-relaxed">
+            <p className="text-base sm:text-lg text-white/70 leading-relaxed max-w-[90%] sm:max-w-none">
               Quando o atendimento é previsível, gentil e bem executado, o resultado aparece no pelo, no olhar e na tranquilidade de quem deixa o pet com a gente.
             </p>
           </div>
@@ -493,10 +507,10 @@ export default function LandingPage() {
       {/* ─────────────────────────────────────────────────────────────────
           TESTIMONIALS SECTION
       ───────────────────────────────────────────────────────────────── */}
-      <Section className="py-24 border-y border-ink/10 bg-bg overflow-hidden relative">
+      <Section id="testimonials" className="py-14 lg:py-24 border-y border-ink/10 bg-bg overflow-hidden relative">
         <ContentArea>
           <motion.div 
-            className="max-w-4xl mb-16"
+            className="max-w-4xl mb-12 lg:mb-16"
             initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true, margin: '-10%' }}
@@ -512,7 +526,7 @@ export default function LandingPage() {
       </Section>
 
       {/* FAQ Section */}
-      <Section animateOnScroll className="py-24">
+      <Section id="faq" animateOnScroll className="pt-14 pb-20 lg:pt-24 lg:pb-32">
         <ContentArea className="max-w-3xl">
           <div className="text-center mb-16">
             <Badge variant="outline" className="mb-4">DÚVIDAS FREQUENTES</Badge>
@@ -531,29 +545,6 @@ export default function LandingPage() {
               </Accordion.Item>
             ))}
           </Accordion>
-        </ContentArea>
-      </Section>
-
-      {/* CTA Section */}
-      <Section animateOnScroll className="pb-32 pt-16">
-        <ContentArea>
-          <div className="bg-brand-500 rounded-3xl p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff1a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff1a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-            <div className="relative z-10 flex flex-col items-center">
-              <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">Pronto para começar?</h2>
-              <p className="text-lg text-white/90 max-w-xl mb-10">
-                Crie sua conta, escolha o melhor horário e acompanhe tudo em um fluxo tão bonito quanto funcional.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                <Button size="lg" className="bg-white text-brand-600 hover:bg-white hover:text-brand-700 hover:brightness-100 hover:shadow-xl" onClick={() => navigate('/register')}>
-                  Quero agendar
-                </Button>
-                <Button size="lg" className="bg-transparent text-white border-2 border-white/30 hover:border-white hover:bg-white/10 hover:text-white" onClick={() => navigate('/login')}>
-                  Já tenho conta
-                </Button>
-              </div>
-            </div>
-          </div>
         </ContentArea>
       </Section>
 

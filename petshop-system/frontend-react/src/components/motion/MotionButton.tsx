@@ -17,11 +17,12 @@ export interface MotionButtonProps extends Omit<HTMLMotionProps<'button'>, 'chil
   disabled?: boolean;
   isLoading?: boolean;
   showGlow?: boolean;
+  shimmer?: boolean;
   children?: ReactNode;
 }
 
 export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
-  ({ className, children, disabled, isLoading, showGlow = false, ...props }, ref) => {
+  ({ className, children, disabled, isLoading, showGlow = false, shimmer = false, ...props }, ref) => {
     const isDisabled = disabled || isLoading;
 
     return (
@@ -40,7 +41,7 @@ export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
           duration: MOTION.duration.base,
           ease: MOTION.ease.premium,
         }}
-        className={cn('relative overflow-hidden', className)}
+        className={cn('relative overflow-hidden group', className)}
         {...props}
       >
         {/* Glow interno animado — via motion.span, não Tailwind hover */}
@@ -59,6 +60,16 @@ export const MotionButton = forwardRef<HTMLButtonElement, MotionButtonProps>(
             }}
           />
         )}
+        
+        {/* Shimmer Effects: Border contínua, Sweep rotacional, Breathe glow na base */}
+        {shimmer && !isDisabled && (
+          <>
+            <div className="shimmer-border" aria-hidden="true" />
+            <div className="shimmer-sweep" aria-hidden="true" />
+            <div className="shimmer-breathe" aria-hidden="true" />
+          </>
+        )}
+        
         {children}
       </motion.button>
     );
