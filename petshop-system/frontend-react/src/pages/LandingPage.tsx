@@ -204,7 +204,7 @@ export default function LandingPage() {
           Todos os elementos conectados ao mesmo heroScrollSmooth.
           Um único organismo que respira junto.
       ───────────────────────────────────────────────────────────────── */}
-      <section id="hero" ref={heroRef} className="relative overflow-hidden bg-bg flex flex-col lg:block min-h-[95dvh] sm:min-h-[80vh] lg:min-h-[840px]">
+      <section id="hero" ref={heroRef} className="relative overflow-hidden bg-bg flex flex-col lg:block min-h-[88dvh] sm:min-h-[80vh] lg:min-h-[840px]">
 
         {/* Cursor contextual do Hero Reveal */}
         <div ref={heroCursorRef} className="reveal-cursor" aria-hidden="true" />
@@ -241,7 +241,7 @@ export default function LandingPage() {
         {/* Content — narrativa scroll-driven, todos os elementos no mesmo heroScrollSmooth */}
         <ContentArea className="relative z-10 flex-1 flex items-center lg:h-full lg:block lg:pt-[10%]">
           <motion.div
-            className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 lg:gap-7 py-24 lg:py-0 w-full lg:max-w-[520px] mx-auto lg:mx-0"
+            className="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 lg:gap-7 py-16 sm:py-20 lg:py-0 w-full lg:max-w-[520px] mx-auto lg:mx-0"
             style={{ opacity: heroContentOpacity, y: heroContentY }}
           >
             {/* Badge — desce mais rápido */}
@@ -320,12 +320,7 @@ export default function LandingPage() {
         </ContentArea>
       </section>
 
-      {/* ─────────────────────────────────────────────────────────────────
-          MARQUEE TRANSITION BAND
-          Overlaps the Hero bottom via -mt-px, creating visual continuity.
-          Pure CSS animation — no JS timers, no rAF, no Intersection Observer.
-          Content is aria-hidden: it is purely decorative.
-      ───────────────────────────────────────────────────────────────── */}
+      {/* Marquee */}
       <div
         aria-hidden="true"
         className="relative z-20 -mt-px overflow-hidden border-y border-dark-border/8"
@@ -376,18 +371,6 @@ export default function LandingPage() {
           ))}
         </div>
       </div>
-
-      {/* ─────────────────────────────────────────────────────────────────
-          MOBILE VISUAL SIGNATURE (Hero Doberman moved down for mobile)
-      ───────────────────────────────────────────────────────────────── */}
-      <section className="lg:hidden relative bg-bg py-12 flex justify-center items-center overflow-hidden" style={{ minHeight: '60vh' }}>
-        <img
-          src={heroImage}
-          alt=""
-          aria-hidden="true"
-          className="absolute bottom-0 w-[90%] max-w-[400px] h-auto object-contain object-bottom pointer-events-none select-none"
-        />
-      </section>
 
       {/* Services Section */}
       <Section id="services" animateOnScroll className="bg-surface-soft py-14 lg:py-24">

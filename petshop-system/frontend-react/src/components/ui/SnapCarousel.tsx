@@ -63,26 +63,33 @@ export function SnapCarousel({ children, className = '', gap = 'md', desktopGrid
 
   return (
     <div className={`relative ${className}`}>
-      {/* Scrollable Track */}
-      <div 
-        ref={scrollRef}
-        className={`flex overflow-x-auto snap-x snap-mandatory hide-scrollbar ${gapClass} px-5 md:px-0 ${
-          desktopGridCols ? `md:grid ${gridColsClass} md:overflow-visible md:snap-none` : ''
-        }`}
-        style={{
-          scrollPaddingLeft: '1.25rem', // Match px-5
-        }}
-      >
-        {React.Children.map(children, (child, index) => (
-          <div key={index} className={`snap-start flex-none w-[85vw] max-w-full ${desktopGridCols ? 'md:w-auto' : 'md:w-[400px]'}`}>
-            {child}
-          </div>
-        ))}
+      {/* 
+        py-8: Proteção anti-clipping — reserva espaço vertical para que scale, 
+        translateY e boxShadow do MotionCard nunca sejam cortados pelo overflow:hidden 
+        do container pai. Necessário porque os cards expandem "para fora" no hover.
+      */}
+      <div className="overflow-hidden py-8 -my-8">
+        {/* Scrollable Track */}
+        <div 
+          ref={scrollRef}
+          className={`flex overflow-x-auto snap-x snap-mandatory hide-scrollbar ${gapClass} px-5 md:px-0 ${
+            desktopGridCols ? `md:grid ${gridColsClass} md:overflow-visible md:snap-none` : ''
+          }`}
+          style={{
+            scrollPaddingLeft: '1.25rem',
+          }}
+        >
+          {React.Children.map(children, (child, index) => (
+            <div key={index} className={`snap-start flex-none w-[85vw] max-w-full ${desktopGridCols ? 'md:w-auto' : 'md:w-[400px]'}`}>
+              {child}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Dots Indicator */}
       {children.length > 1 && (
-        <div className={`flex items-center justify-center gap-2 mt-8 lg:mt-10 ${desktopGridCols ? 'md:hidden' : ''}`}>
+        <div className={`flex items-center justify-center gap-2 mt-6 lg:mt-8 ${desktopGridCols ? 'md:hidden' : ''}`}>
           {children.map((_, i) => (
             <button
               key={i}

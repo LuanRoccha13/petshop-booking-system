@@ -28,7 +28,7 @@ services:
       DB_NAME: petshop
       DB_USERNAME: petshop
       DB_PASSWORD: petshop
-      JWT_SECRET: Da3Nk5Qp8Rz2Xc7Vt1Yh4Lb9Fp0Sa6Ge
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET não definido. Crie um arquivo .env na pasta backend-spring com JWT_SECRET=<valor forte gerado localmente>}
     depends_on:
       postgres:
         condition: service_healthy
